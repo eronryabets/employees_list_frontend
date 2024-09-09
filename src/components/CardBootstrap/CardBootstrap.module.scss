@@ -14,7 +14,7 @@
 
 .cardBootstrap {
   /* offset-x | offset-y | blur-radius | color */
-  box-shadow:  5px 5px 15px black;
+  box-shadow: 5px 5px 15px black;
   margin: 1.5rem 0 3rem;
   background: linear-gradient(#d0d0e8, #d2c8c8);
 
@@ -22,12 +22,25 @@
     background: linear-gradient(#d0d0e8, #d2c8c8);
   }
 
-  .fixedImg  {
+  .cardContent {
+    display: flex; /* Делает контейнер флексбоксом */
+    align-items: center; /* Центрирует элементы по вертикали */
+  }
+
+  .fixedImg {
+    position: relative;
     width: 150px;
     height: 150px;
     object-fit: cover;
     border-radius: 5px;
+    margin-right: 20px; /* Добавляем отступ справа */
+  }
+
+  .textContent {
+    display: flex;
+    flex-direction: column;
   }
 }
+
 
 

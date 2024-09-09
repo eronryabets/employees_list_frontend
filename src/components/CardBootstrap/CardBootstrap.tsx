@@ -22,26 +22,31 @@ export const CardBootstrap = ({
                                   card_links
                               }: CardBootstrapProps) => {
     return (
-            <Card style={{width: width}} className={styles.cardBootstrap}>
+        <Card style={{width: width}} className={styles.cardBootstrap}>
+
+            <div className={styles.cardContent}>
                 <Card.Img variant="top"
                           src={img_src}
                           className={styles.fixedImg}/>
+
                 <Card.Body>
                     <Card.Title>{card_title}</Card.Title>
                     <Card.Text>{card_text}</Card.Text>
                 </Card.Body>
-                <ListGroup className="list-group-flush" style={{ color: 'red' }}>
-                    {card_row_text.map((row, index) => (
-                        <ListGroup.Item key={index} className={styles.item}>{row}</ListGroup.Item>
-                    ))}
-                </ListGroup>
-                <Card.Body>
-                    {card_links.map((link, index) => (
-                        <Card.Link key={index} href={link.url}>
-                            {link.label}
-                        </Card.Link>
-                    ))}
-                </Card.Body>
-            </Card>
+            </div>
+
+            <ListGroup className="list-group-flush" style={{color: 'red'}}>
+                {card_row_text.map((row, index) => (
+                    <ListGroup.Item key={index} className={styles.item}>{row}</ListGroup.Item>
+                ))}
+            </ListGroup>
+            <Card.Body>
+                {card_links.map((link, index) => (
+                    <Card.Link key={index} href={link.url}>
+                        {link.label}
+                    </Card.Link>
+                ))}
+            </Card.Body>
+        </Card>
     );
 };
