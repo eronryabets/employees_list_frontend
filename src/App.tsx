@@ -5,7 +5,7 @@ import {EmployeeCardList} from "./components/EmployeeCard";
 import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
 
-const BASE_URL = 'http://localhost:8005/api/employee-list/';
+const BASE_URL = 'http://localhost:8005/api/employee/';
 
 function App() {
     // Инициализируем состояние пустым массивом

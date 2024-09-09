@@ -1,6 +1,7 @@
 import styles from './CardBootstrap.module.scss';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
+import {Button} from "react-bootstrap";
 
 interface CardBootstrapProps {
     width: string;
@@ -37,7 +38,18 @@ export const CardBootstrap = ({
 
             <ListGroup className="list-group-flush" style={{color: 'red'}}>
                 {card_row_text.map((row, index) => (
-                    <ListGroup.Item key={index} className={styles.item}>{row}</ListGroup.Item>
+
+                    <div key={index} className={styles.cardContent}>
+                        <ListGroup.Item key={index} className={styles.item}>{row}</ListGroup.Item>
+                        {/* Проверка, содержит ли элемент "Rating:" */}
+                        {row.startsWith('Rating:') && (
+                            <>
+                                <Button variant="success" className={styles.button} >+</Button>{' '}
+                                <Button variant="dark" className={styles.button}>-</Button>{' '}
+                            </>
+                        )}
+                    </div>
+
                 ))}
             </ListGroup>
             <Card.Body>
