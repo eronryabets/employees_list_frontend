@@ -1,4 +1,4 @@
-import styles from './EmployeeCard.module.scss';
+// import styles from './EmployeeCardList.module.scss';
 import {LocalEmployee} from "../../types";
 import {EmployeeInfo} from "../EmployeeInfo";
 
@@ -6,9 +6,9 @@ interface EmployeeCardProps extends LocalEmployee {
 }
 
 export const EmployeeCardList = (props: { employees: EmployeeCardProps[] }) => (
-  <div className={styles.employeeCardList}>
+  <div>
     {props.employees.map((employee) => (
-      <div key={employee.id} className={styles.employeeCard}>
+      <div key={employee.id}>
         <EmployeeInfo
           first_name={employee.first_name}
           last_name={employee.last_name}

@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Container} from "./components/Container";
 import {TheHeader} from "./components/TheHeader";
 import {EmployeeCardList} from "./components/EmployeeCard";
-// import { defaultEmployee } from "./mock/employee";
 import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
 

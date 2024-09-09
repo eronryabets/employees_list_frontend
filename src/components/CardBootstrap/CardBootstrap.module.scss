@@ -1,0 +1,33 @@
+:global {
+  body[data-theme='light'] {
+    --ucard-bg: var(--white);
+    --bio-color: var(--gray-200);
+    --ucard-shadow: var(--shadow);
+  }
+
+  body[data-theme='dark'] {
+    --ucard-bg: var(--gray-400);
+    --bio-color: var(--white);
+    --ucard-shadow: unset;
+  }
+}
+
+.cardBootstrap {
+  /* offset-x | offset-y | blur-radius | color */
+  box-shadow:  5px 5px 15px black;
+  margin: 1.5rem 0 3rem;
+  background: linear-gradient(#d0d0e8, #d2c8c8);
+
+  .item {
+    background: linear-gradient(#d0d0e8, #d2c8c8);
+  }
+
+  .fixedImg  {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+}
+
+
