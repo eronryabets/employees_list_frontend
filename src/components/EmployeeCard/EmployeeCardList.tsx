@@ -14,6 +14,8 @@ export const EmployeeCardList = (props: { employees: EmployeeCardProps[] }) => (
           last_name={employee.last_name}
           position={employee.position}
           age={employee.age}
+          avatar_link = {employee.avatar_link}
+          rating = {employee.rating}
         />
       </div>
     ))}

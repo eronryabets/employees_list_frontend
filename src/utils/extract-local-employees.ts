@@ -10,5 +10,7 @@ export const extractLocalEmployees = (employees: ApiEmployee[]): LocalEmployee[]
     years_worked: employee.years_worked,
     email: employee.email,
     facebook_link: employee.facebook_link,
+    avatar_link: employee.avatar_link,
+    rating: employee.rating,
   }));
 };
