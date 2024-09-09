@@ -25,7 +25,7 @@ export const EmployeeInfo = ({
     const text_row3: string = `Rating: ${rating}`;
 
     return (
-        <CardBootstrap width={'34rem'}
+        <CardBootstrap width={'auto'}
                        variant={'top'}
                        img_src={avatar_link}
                        card_title={fio}
