@@ -1,7 +1,6 @@
+import React from 'react';
+import { Card, ListGroup, Button } from 'react-bootstrap';
 import styles from './CardBootstrap.module.scss';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import {Button} from "react-bootstrap";
 
 interface CardBootstrapProps {
     width: string;
@@ -11,24 +10,25 @@ interface CardBootstrapProps {
     card_text: string;
     card_row_text: string[];
     card_links: { url: string; label: string }[];
+    onRatingIncrease: () => void; // Функция для увеличения рейтинга
+    onRatingDecrease: () => void; // Функция для уменьшения рейтинга
 }
 
 export const CardBootstrap = ({
-                                  width,
-                                  variant,
-                                  img_src,
-                                  card_title,
-                                  card_text,
-                                  card_row_text,
-                                  card_links
-                              }: CardBootstrapProps) => {
+    width,
+    variant,
+    img_src,
+    card_title,
+    card_text,
+    card_row_text,
+    card_links,
+    onRatingIncrease,
+    onRatingDecrease,
+}: CardBootstrapProps) => {
     return (
-        <Card style={{width: width}} className={styles.cardBootstrap}>
-
+        <Card style={{ width: width }} className={styles.cardBootstrap}>
             <div className={styles.cardContent}>
-                <Card.Img variant="top"
-                          src={img_src}
-                          className={styles.fixedImg}/>
+                <Card.Img variant={variant} src={img_src} className={styles.fixedImg} />
 
                 <Card.Body>
                     <Card.Title>{card_title}</Card.Title>
@@ -36,22 +36,23 @@ export const CardBootstrap = ({
                 </Card.Body>
             </div>
 
-            <ListGroup className="list-group-flush" style={{color: 'red'}}>
+            <ListGroup className="list-group-flush">
                 {card_row_text.map((row, index) => (
-
                     <div key={index} className={styles.cardContent}>
-                        <ListGroup.Item key={index} className={styles.item}>{row}</ListGroup.Item>
+                        <ListGroup.Item className={styles.item} >{row}</ListGroup.Item>
                         {/* Проверка, содержит ли элемент "Rating:" */}
                         {row.startsWith('Rating:') && (
-                            <>
-                                <Button variant="success" className={styles.button} >+</Button>{' '}
-                                <Button variant="dark" className={styles.button}>-</Button>{' '}
-                            </>
+                            <div className={styles.buttons}>
+                                <Button variant="success" className={styles.button}
+                                        onClick={onRatingIncrease} >+</Button>{' '}
+                                <Button variant="dark" className={styles.button}
+                                        onClick={onRatingDecrease} >-</Button>
+                            </div>
                         )}
                     </div>
-
                 ))}
             </ListGroup>
+
             <Card.Body>
                 {card_links.map((link, index) => (
                     <Card.Link key={index} href={link.url}>
