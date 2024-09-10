@@ -5,6 +5,7 @@ import {EmployeeCardList} from "./components/EmployeeCard";
 import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
 import {Spinner} from "./components/Spinner";
+import {SimpleNavbar} from "./components/SimpleNavbar";
 
 
 const BASE_URL = 'http://localhost:8005/api/employee/';
@@ -40,6 +41,7 @@ function App() {
 
     return (
         <Container>
+            <SimpleNavbar/>
             <TheHeader/>
             {employees.length > 0 ? (
                 <EmployeeCardList employees={employees}
