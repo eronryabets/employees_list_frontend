@@ -32,11 +32,19 @@ function App() {
         fetchEmployees(); // Перезагружаем данные с сервера
     };
 
+    // Обновляем состояние, фильтруя удаленного сотрудника
+     const handleEmployeeDelete = (id: number) => {
+        setEmployees((prevEmployees) =>
+            prevEmployees.filter((employee) => employee.id !== id));
+    };
+
     return (
         <Container>
             <TheHeader/>
             {employees.length > 0 ? (
-                <EmployeeCardList employees={employees} onRatingSave={handleRatingSave} />
+                <EmployeeCardList employees={employees}
+                                  onRatingSave={handleRatingSave}
+                                  onEmployeeDelete={handleEmployeeDelete}/>
             ) : (
                 // <p>Loading employees...</p>
                 <Spinner/>

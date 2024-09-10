@@ -5,9 +5,10 @@ import {CardBootstrap} from '../CardBootstrap';
 interface EmployeeCardProps extends LocalEmployee {
 }
 
-export const EmployeeCardList = ({employees, onRatingSave}: {
+export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
     employees: EmployeeCardProps[],
-    onRatingSave: () => void
+    onRatingSave: () => void,
+    onEmployeeDelete: (id: number) => void,
 }) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
@@ -30,6 +31,24 @@ export const EmployeeCardList = ({employees, onRatingSave}: {
         }
     };
 
+    const handleEmployeeDelete = async (id: number) => {
+        try {
+            const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete employee');
+            }
+
+            console.log(`Employee deleted`);
+            // Обновляем состояние, удаляя сотрудника
+            onEmployeeDelete(id);
+        } catch (error) {
+            console.error('Error delete employee:', error);
+        }
+    }
+
     return (
         <div>
             {employees.map((employee) => (
@@ -49,6 +68,7 @@ export const EmployeeCardList = ({employees, onRatingSave}: {
                     card_links={[{url: "https://example.com", label: "Link"}]}
                     initialRating={employee.rating}
                     onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Сохранение
+                    onDelete={()=>handleEmployeeDelete(employee.id)} // Удаление
                 />
             ))}
         </div>

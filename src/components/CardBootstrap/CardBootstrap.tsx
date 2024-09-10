@@ -12,6 +12,7 @@ interface CardBootstrapProps {
     card_links: { url: string; label: string }[];
     initialRating: number;
     onSave: (newRating: number) => void;
+    onDelete: () => void;
 }
 
 export const CardBootstrap = ({
@@ -24,6 +25,7 @@ export const CardBootstrap = ({
     card_links,
     initialRating,
     onSave,
+    onDelete,
 }: CardBootstrapProps) => {
     // Локальное состояние для рейтинга
     const [rating, setRating] = useState(initialRating);
@@ -51,7 +53,7 @@ export const CardBootstrap = ({
                 </Card.Body>
                 <Button variant="outline-danger"
                         className={styles.deleteButton}
-                        // onClick={handleDelete}
+                        onClick={onDelete}
                 >Delete</Button>{' '}
             </div>
 
