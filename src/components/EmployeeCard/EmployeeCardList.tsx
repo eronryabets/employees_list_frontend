@@ -1,10 +1,14 @@
 import React from 'react';
-import { LocalEmployee } from 'types';
-import { CardBootstrap } from '../CardBootstrap';
+import {LocalEmployee} from 'types';
+import {CardBootstrap} from '../CardBootstrap';
 
-interface EmployeeCardProps extends LocalEmployee {}
+interface EmployeeCardProps extends LocalEmployee {
+}
 
-export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[] }) => {
+export const EmployeeCardList = ({employees, onRatingSave}: {
+    employees: EmployeeCardProps[],
+    onRatingSave: () => void
+}) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
             const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
@@ -12,7 +16,7 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ rating: newRating }),
+                body: JSON.stringify({rating: newRating}),
             });
 
             if (!response.ok) {
@@ -20,6 +24,7 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
             }
 
             console.log(`Rating for employee ${id} saved: ${newRating}`);
+            onRatingSave(); // Обновление данных после сохранения
         } catch (error) {
             console.error('Error saving rating:', error);
         }
@@ -38,11 +43,12 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
                     card_row_text={[
                         `Age: ${employee.age}`,
                         `Position: ${employee.position}`,
+                        // Рейтинг теперь передается через initialRating
                         `Rating: ${employee.rating}`,
                     ]}
-                    card_links={[{ url: "https://example.com", label: "Link" }]}
+                    card_links={[{url: "https://example.com", label: "Link"}]}
                     initialRating={employee.rating}
-                    onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Передаем функцию сохранения
+                    onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Сохранение
                 />
             ))}
         </div>

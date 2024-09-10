@@ -10,8 +10,8 @@ interface CardBootstrapProps {
     card_text: string;
     card_row_text: string[];
     card_links: { url: string; label: string }[];
-    initialRating: number; // Передаем начальный рейтинг
-    onSave: (newRating: number) => void; // Функция для сохранения рейтинга
+    initialRating: number;
+    onSave: (newRating: number) => void;
 }
 
 export const CardBootstrap = ({
@@ -37,7 +37,7 @@ export const CardBootstrap = ({
     };
 
     const handleSave = () => {
-        onSave(rating); // Передаем новый рейтинг в родительский компонент
+        onSave(rating); // Сохранение нового рейтинга
     };
 
     return (
@@ -54,20 +54,24 @@ export const CardBootstrap = ({
             <ListGroup className="list-group-flush">
                 {card_row_text.map((row, index) => (
                     <div key={index} className={styles.cardContent}>
-                        <ListGroup.Item className={styles.item} >{row}</ListGroup.Item>
-                        {/* Проверка, содержит ли элемент "Rating:" */}
-                        {row.startsWith('Rating:') && (
-                            <div className={styles.buttons}>
-                                <Button variant="success"
-                                        className={styles.button}
-                                        onClick={handleIncrease}>+</Button>{' '}
-                                <Button variant="dark"
-                                        className={styles.button}
-                                        onClick={handleDecrease}>-</Button>
-                                <Button variant="primary"
-                                        className={styles.button}
-                                        onClick={handleSave}>Save</Button>
-                            </div>
+                        {/* Проверка строки "Rating:" заменена на вывод рейтинга напрямую */}
+                        {row.startsWith('Rating:') ? (
+                            <ListGroup.Item className={styles.item}>
+                                Rating: {rating}
+                                <div className={styles.buttons}>
+                                    <Button variant="success"
+                                            className={styles.button}
+                                            onClick={handleIncrease}>+</Button>{' '}
+                                    <Button variant="dark"
+                                            className={styles.button}
+                                            onClick={handleDecrease}>-</Button>
+                                    <Button variant="primary"
+                                            className={styles.button}
+                                            onClick={handleSave}>Save</Button>
+                                </div>
+                            </ListGroup.Item>
+                        ) : (
+                            <ListGroup.Item className={styles.item}>{row}</ListGroup.Item>
                         )}
                     </div>
                 ))}

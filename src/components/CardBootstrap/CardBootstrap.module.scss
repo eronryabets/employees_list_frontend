@@ -20,6 +20,10 @@
 
   .item {
     background: linear-gradient(#d0d0e8, #d2c8c8);
+    display: flex; /* Ставим элемент в флекс-контейнер */
+    justify-content: space-between; /* Размещаем контент по краям */
+    align-items: center; /* Центрируем текст и кнопки по вертикали */
+    margin: 1px 1px 1px 1px; /* отступы: top, right, bottom, left */
   }
 
   .cardContent {
@@ -55,7 +59,7 @@
 
   .buttons {
     display: flex;
-
+    margin: 1px 1px 1px 25px; /* отступы: top, right, bottom, left */
   }
 
 }
