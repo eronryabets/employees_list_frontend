@@ -4,6 +4,8 @@ import {TheHeader} from "./components/TheHeader";
 import {EmployeeCardList} from "./components/EmployeeCard";
 import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
+import {Spinner} from "./components/Spinner";
+
 
 const BASE_URL = 'http://localhost:8005/api/employee/';
 
@@ -36,7 +38,8 @@ function App() {
             {employees.length > 0 ? (
                 <EmployeeCardList employees={employees} onRatingSave={handleRatingSave} />
             ) : (
-                <p>Loading employees...</p>
+                // <p>Loading employees...</p>
+                <Spinner/>
             )}
         </Container>
     );
