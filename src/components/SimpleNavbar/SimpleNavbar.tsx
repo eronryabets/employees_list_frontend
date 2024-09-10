@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import classNames from 'classnames';
+import {ThemeSwitcher} from "../ThemeSwitcher";
 
 interface SimpleNavbarProps {
 }
@@ -13,7 +14,7 @@ export const SimpleNavbar = ({}: SimpleNavbarProps) => {
         <div className={styles.simpleNavbar}>
             <Navbar expand="lg" className={classNames('bg-body-tertiary', styles.main)}>
                 <Container>
-                    <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                    <Navbar.Brand href="#home">Employees</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
@@ -32,6 +33,7 @@ export const SimpleNavbar = ({}: SimpleNavbarProps) => {
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
+                    <ThemeSwitcher/>
                 </Container>
             </Navbar>
         </div>

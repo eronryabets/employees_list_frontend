@@ -42,7 +42,6 @@ function App() {
     return (
         <Container>
             <SimpleNavbar/>
-            <TheHeader/>
             {employees.length > 0 ? (
                 <EmployeeCardList employees={employees}
                                   onRatingSave={handleRatingSave}
