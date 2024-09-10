@@ -32,6 +32,7 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
                     // onRatingDecrease={() => handleRatingChange(employee.id, employee.rating - 1)}
                     onRatingIncrease={() => {}}
                     onRatingDecrease={() => {}}
+                    onRatingSave={() => {}}
                 />
             ))}
         </div>

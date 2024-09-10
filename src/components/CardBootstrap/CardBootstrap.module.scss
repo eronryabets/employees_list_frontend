@@ -45,15 +45,17 @@
     color: aqua;
     width: 33px;
     height: 33px;
-    margin: 2px 2px;
+    margin: 2px 4px;
     border-radius: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 5px 5px 15px black;
   }
 
   .buttons {
     display: flex;
+
   }
 
 }

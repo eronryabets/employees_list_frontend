@@ -12,6 +12,7 @@ interface CardBootstrapProps {
     card_links: { url: string; label: string }[];
     onRatingIncrease: () => void; // Функция для увеличения рейтинга
     onRatingDecrease: () => void; // Функция для уменьшения рейтинга
+    onRatingSave: () => void; // Сохранение изменений
 }
 
 export const CardBootstrap = ({
@@ -24,6 +25,7 @@ export const CardBootstrap = ({
     card_links,
     onRatingIncrease,
     onRatingDecrease,
+    onRatingSave,
 }: CardBootstrapProps) => {
     return (
         <Card style={{ width: width }} className={styles.cardBootstrap}>
@@ -47,6 +49,9 @@ export const CardBootstrap = ({
                                         onClick={onRatingIncrease} >+</Button>{' '}
                                 <Button variant="dark" className={styles.button}
                                         onClick={onRatingDecrease} >-</Button>
+                                <Button variant="primary"
+                                        className={styles.button}
+                                        onClick={onRatingSave} >Save</Button>
                             </div>
                         )}
                     </div>
