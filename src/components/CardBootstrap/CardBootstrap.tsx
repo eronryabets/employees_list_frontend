@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, ListGroup, Button } from 'react-bootstrap';
 import styles from './CardBootstrap.module.scss';
+import {ModalDeleteButton} from "../ModalDeleteButton";
 
 interface CardBootstrapProps {
     width: string;
@@ -51,10 +52,7 @@ export const CardBootstrap = ({
                     <Card.Title>{card_title}</Card.Title>
                     <Card.Text>{card_text}</Card.Text>
                 </Card.Body>
-                <Button variant="outline-danger"
-                        className={styles.deleteButton}
-                        onClick={onDelete}
-                >Delete</Button>{' '}
+                <ModalDeleteButton onDelete={onDelete}/>
             </div>
 
             <ListGroup className="list-group-flush">
