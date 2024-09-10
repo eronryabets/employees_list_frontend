@@ -1,16 +1,30 @@
 import React from 'react';
 import { LocalEmployee } from 'types';
 import { CardBootstrap } from '../CardBootstrap';
-import { useDispatch } from 'react-redux';
-// import { updateEmployeeRating } from '../../slice/employeeSlice';
 
 interface EmployeeCardProps extends LocalEmployee {}
 
 export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[] }) => {
-    // const dispatch = useDispatch();
-    // const handleRatingChange = (id: string, newRating: number) => {
-    //     dispatch(updateEmployeeRating({ id, newRating }));
-    // };
+
+      const handleSaveRating = async (id: number, newRating: number) => {
+        try {
+            const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating: newRating }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save rating');
+            }
+
+            console.log(`Rating for employee ${id} saved: ${newRating}`);
+        } catch (error) {
+            console.error('Error saving rating:', error);
+        }
+    };
 
     return (
         <div>
@@ -28,11 +42,12 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
                         `Rating: ${employee.rating}`
                     ]}
                     card_links={[{ url: "https://example.com", label: "Link" }]}
-                    // onRatingIncrease={() => handleRatingChange(employee.id, employee.rating + 1)}
-                    // onRatingDecrease={() => handleRatingChange(employee.id, employee.rating - 1)}
-                    onRatingIncrease={() => {}}
-                    onRatingDecrease={() => {}}
-                    onRatingSave={() => {}}
+                    // onRatingIncrease={() => {}}
+                    // onRatingDecrease={() => {}}
+                    // onRatingSave={() => {}}
+                    initialRating={employee.rating}
+                    // Передаем функцию сохранения
+                     onSave={(newRating) => handleSaveRating(employee.id, newRating)}
                 />
             ))}
         </div>
