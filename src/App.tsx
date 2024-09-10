@@ -2,10 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {Container} from "./components/Container";
 import {TheHeader} from "./components/TheHeader";
 import {EmployeeCardList} from "./components/EmployeeCard";
+import {FormNewEmployee} from "./components/FormNewEmployee"; // Импортируем компонент
 import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
 import {Spinner} from "./components/Spinner";
 import {SimpleNavbar} from "./components/SimpleNavbar";
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'; // Импортируем роутинг
 
 
 const BASE_URL = 'http://localhost:8005/api/employee/';
@@ -28,29 +30,38 @@ function App() {
         fetchEmployees();
     }, []);
 
-    // Обновляем сотрудников после сохранения
     const handleRatingSave = () => {
-        fetchEmployees(); // Перезагружаем данные с сервера
+        fetchEmployees();
     };
 
-    // Обновляем состояние, фильтруя удаленного сотрудника
-     const handleEmployeeDelete = (id: number) => {
+    const handleEmployeeDelete = (id: number) => {
         setEmployees((prevEmployees) =>
             prevEmployees.filter((employee) => employee.id !== id));
     };
 
     return (
-        <Container>
-            <SimpleNavbar/>
-            {employees.length > 0 ? (
-                <EmployeeCardList employees={employees}
-                                  onRatingSave={handleRatingSave}
-                                  onEmployeeDelete={handleEmployeeDelete}/>
-            ) : (
-                // <p>Loading employees...</p>
-                <Spinner/>
-            )}
-        </Container>
+        <Router> {/* Добавляем роутер */}
+            <Container>
+                <SimpleNavbar/>
+                <Routes> {/* Добавляем маршруты */}
+                    <Route
+                        path="/"
+                        element={
+                            employees.length > 0 ? (
+                                <EmployeeCardList
+                                    employees={employees}
+                                    onRatingSave={handleRatingSave}
+                                    onEmployeeDelete={handleEmployeeDelete}
+                                />
+                            ) : (
+                                <Spinner/>
+                            )
+                        }
+                    />
+                    <Route path="/add" element={<FormNewEmployee/>} /> {/* Маршрут для формы добавления */}
+                </Routes>
+            </Container>
+        </Router>
     );
 }
 
