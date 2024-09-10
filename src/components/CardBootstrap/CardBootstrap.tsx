@@ -49,6 +49,10 @@ export const CardBootstrap = ({
                     <Card.Title>{card_title}</Card.Title>
                     <Card.Text>{card_text}</Card.Text>
                 </Card.Body>
+                <Button variant="outline-danger"
+                        className={styles.deleteButton}
+                        // onClick={handleDelete}
+                >Delete</Button>{' '}
             </div>
 
             <ListGroup className="list-group-flush">
