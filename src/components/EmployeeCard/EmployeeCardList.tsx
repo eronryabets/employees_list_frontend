@@ -5,8 +5,7 @@ import { CardBootstrap } from '../CardBootstrap';
 interface EmployeeCardProps extends LocalEmployee {}
 
 export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[] }) => {
-
-      const handleSaveRating = async (id: number, newRating: number) => {
+    const handleSaveRating = async (id: number, newRating: number) => {
         try {
             const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
                 method: 'PATCH',
@@ -39,15 +38,11 @@ export const EmployeeCardList = ({ employees }: { employees: EmployeeCardProps[]
                     card_row_text={[
                         `Age: ${employee.age}`,
                         `Position: ${employee.position}`,
-                        `Rating: ${employee.rating}`
+                        `Rating: ${employee.rating}`,
                     ]}
                     card_links={[{ url: "https://example.com", label: "Link" }]}
-                    // onRatingIncrease={() => {}}
-                    // onRatingDecrease={() => {}}
-                    // onRatingSave={() => {}}
                     initialRating={employee.rating}
-                    // Передаем функцию сохранения
-                     onSave={(newRating) => handleSaveRating(employee.id, newRating)}
+                    onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Передаем функцию сохранения
                 />
             ))}
         </div>

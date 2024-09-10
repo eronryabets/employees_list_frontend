@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Card, ListGroup, Button } from 'react-bootstrap';
 import styles from './CardBootstrap.module.scss';
 
@@ -10,9 +10,6 @@ interface CardBootstrapProps {
     card_text: string;
     card_row_text: string[];
     card_links: { url: string; label: string }[];
-    // onRatingIncrease: () => void; // Функция для увеличения рейтинга
-    // onRatingDecrease: () => void; // Функция для уменьшения рейтинга
-    // onRatingSave: () => void; // Сохранение изменений
     initialRating: number; // Передаем начальный рейтинг
     onSave: (newRating: number) => void; // Функция для сохранения рейтинга
 }
@@ -25,13 +22,9 @@ export const CardBootstrap = ({
     card_text,
     card_row_text,
     card_links,
-    // onRatingIncrease,
-    // onRatingDecrease,
-    // onRatingSave,
     initialRating,
     onSave,
 }: CardBootstrapProps) => {
-
     // Локальное состояние для рейтинга
     const [rating, setRating] = useState(initialRating);
 
