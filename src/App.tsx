@@ -18,6 +18,9 @@ function App() {
     const [formError, setFormError]
         = useState<{ [key: string]: string[] }>({});
 
+    const [successMessage, setSuccessMessage]
+        = useState<string | null>(null);
+
     const fetchEmployees = async () => {
         try {
             const res = await fetch(BASE_URL);
@@ -62,8 +65,11 @@ function App() {
         // Если запрос успешен, сбрасываем ошибки и обновляем сотрудников
         setFormError({});
         fetchEmployees();
+         // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
+        setSuccessMessage('Employee successfully created!');
     } catch (error) {
         console.error('Failed to add employee:', error);
+        setSuccessMessage(null); // Очистить сообщение об успехе
     }
 };
 
@@ -90,6 +96,7 @@ function App() {
                         <FormNewEmployee
                             onSubmit={addNewEmployee}
                             formError={formError}
+                            successMessage={successMessage}
                         />} />
                 </Routes>
             </Container>

@@ -4,12 +4,21 @@
   margin: 30px 2px 5px;
   background-color: #cbd1d7;
   padding: 15px 15px;
-}
 
-.formNewEmployee .is-invalid {
+  .isInvalid {
     border-color: red;
-}
+  }
 
-.formNewEmployee .invalid-feedback {
+  .invalidFeedback {
     color: red;
+  }
+
+  .textSuccess {
+    color: green;
+    font-size: 33px;
+    margin-top: 0.75rem;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px black;
+  }
+
 }

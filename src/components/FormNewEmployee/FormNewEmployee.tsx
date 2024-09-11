@@ -7,9 +7,10 @@ import Button from 'react-bootstrap/Button';
 interface FormNewEmployeeProps {
     onSubmit: (employeeData: any) => void;
     formError: { [key: string]: string[] }; // Ошибки, переданные с сервера
+    successMessage: string | null; // Опциональное сообщение об успехе
 }
 
-export const FormNewEmployee = ({onSubmit, formError}: FormNewEmployeeProps) => {
+export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewEmployeeProps) => {
     const [employeeData, setEmployeeData] = useState({
         first_name: '',
         last_name: '',
@@ -255,12 +256,16 @@ export const FormNewEmployee = ({onSubmit, formError}: FormNewEmployeeProps) => 
                     )}
                 </InputGroup>
 
-                {/* Вывод ошибки, если она есть */}
-                {/*{formError && <Alert variant="danger">{formError}</Alert>}*/}
-
                 <Button type="submit" variant="primary">
                     Add Employee
                 </Button>
+
+                {successMessage && (
+                    <div className={styles.textSuccess}>
+                        {successMessage}
+                    </div>
+                )}
+
             </Form>
         </div>
     );
