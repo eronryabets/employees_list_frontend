@@ -39,6 +39,25 @@ function App() {
             prevEmployees.filter((employee) => employee.id !== id));
     };
 
+     // Функция для добавления нового сотрудника
+    const addEmployee = async (employeeData: LocalEmployee) => {
+        try {
+            const res = await fetch(BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employeeData),
+            });
+            if (!res.ok) {
+                throw new Error('Failed to add employee');
+            }
+            fetchEmployees(); // Обновляем список после добавления
+        } catch (error) {
+            console.error('Failed to add employee:', error);
+        }
+    };
+
     return (
         <Router> {/* Добавляем роутер */}
             <Container>
@@ -58,7 +77,10 @@ function App() {
                             )
                         }
                     />
-                    <Route path="/add" element={<FormNewEmployee/>} /> {/* Маршрут для формы добавления */}
+                    <Route path="/add" element={
+                        <FormNewEmployee
+                            onSubmit={addEmployee}
+                        />} /> {/* Маршрут для формы добавления */}
                 </Routes>
             </Container>
         </Router>

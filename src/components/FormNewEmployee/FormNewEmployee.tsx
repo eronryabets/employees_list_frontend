@@ -1,49 +1,191 @@
+import React, { useState } from 'react';
 import styles from './FormNewEmployee.module.scss';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
 
 interface FormNewEmployeeProps {
+    onSubmit: (employeeData: any) => void;
 }
 
-export const FormNewEmployee = ({}: FormNewEmployeeProps) => {
+export const FormNewEmployee = ({ onSubmit }: FormNewEmployeeProps) => {
+    const [employeeData, setEmployeeData] = useState({
+        first_name: '',
+        last_name: '',
+        date_of_birth: '',
+        age: 0,
+        position: '',
+        profession: '',
+        years_worked: 0,
+        phone_number: '',
+        email: '',
+        facebook_link: '',
+        avatar_link: '',
+        rating: 0,
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEmployeeData({
+            ...employeeData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(employeeData);
+        // Передаем данные о сотруднике в родительский компонент
+    };
+
     return (
         <div className={styles.formNewEmployee}>
-            <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-                <Form.Control
-                    placeholder="Username"
-                    aria-label="Username"
-                    aria-describedby="basic-addon1"
-                />
-            </InputGroup>
+            <Form onSubmit={handleSubmit}>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>First Name</InputGroup.Text>
+                    <Form.Control
+                        name="first_name"
+                        placeholder="First Name"
+                        aria-label="First Name"
+                        value={employeeData.first_name}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
 
-            <InputGroup className="mb-3">
-                <Form.Control
-                    placeholder="Recipient's username"
-                    aria-label="Recipient's username"
-                    aria-describedby="basic-addon2"
-                />
-                <InputGroup.Text id="basic-addon2">@example.com</InputGroup.Text>
-            </InputGroup>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Last Name</InputGroup.Text>
+                    <Form.Control
+                        name="last_name"
+                        placeholder="Last Name"
+                        aria-label="Last Name"
+                        value={employeeData.last_name}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
 
-            <Form.Label htmlFor="basic-url">Your vanity URL</Form.Label>
-            <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon3">
-                    https://example.com/users/
-                </InputGroup.Text>
-                <Form.Control id="basic-url" aria-describedby="basic-addon3"/>
-            </InputGroup>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Date of Birth</InputGroup.Text>
+                    <Form.Control
+                        name="date_of_birth"
+                        type="date"
+                        aria-label="Date of Birth"
+                        value={employeeData.date_of_birth}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
 
-            <InputGroup className="mb-3">
-                <InputGroup.Text>$</InputGroup.Text>
-                <Form.Control aria-label="Amount (to the nearest dollar)"/>
-                <InputGroup.Text>.00</InputGroup.Text>
-            </InputGroup>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Age</InputGroup.Text>
+                    <Form.Control
+                        name="age"
+                        type="number"
+                        placeholder="Age"
+                        aria-label="Age"
+                        value={employeeData.age}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
 
-            <InputGroup>
-                <InputGroup.Text>With textarea</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea"/>
-            </InputGroup>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Position</InputGroup.Text>
+                    <Form.Control
+                        name="position"
+                        placeholder="Position"
+                        aria-label="Position"
+                        value={employeeData.position}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Profession</InputGroup.Text>
+                    <Form.Control
+                        name="profession"
+                        placeholder="Profession"
+                        aria-label="Profession"
+                        value={employeeData.profession}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Years Worked</InputGroup.Text>
+                    <Form.Control
+                        name="years_worked"
+                        type="number"
+                        placeholder="Years Worked"
+                        aria-label="Years Worked"
+                        value={employeeData.years_worked}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Phone Number</InputGroup.Text>
+                    <Form.Control
+                        name="phone_number"
+                        type="tel"
+                        placeholder="Phone Number"
+                        aria-label="Phone Number"
+                        value={employeeData.phone_number}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Email</InputGroup.Text>
+                    <Form.Control
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        aria-label="Email"
+                        value={employeeData.email}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Facebook Link</InputGroup.Text>
+                    <Form.Control
+                        name="facebook_link"
+                        type="url"
+                        placeholder="Facebook Link"
+                        aria-label="Facebook Link"
+                        value={employeeData.facebook_link}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Avatar Link</InputGroup.Text>
+                    <Form.Control
+                        name="avatar_link"
+                        type="url"
+                        placeholder="Avatar Link"
+                        aria-label="Avatar Link"
+                        value={employeeData.avatar_link}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>Rating</InputGroup.Text>
+                    <Form.Control
+                        name="rating"
+                        type="number"
+                        placeholder="Rating"
+                        aria-label="Rating"
+                        min="0"
+                        max="100"
+                        value={employeeData.rating}
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+
+                <Button type="submit" variant="primary">
+                    Add Employee
+                </Button>
+            </Form>
         </div>
     );
 };
