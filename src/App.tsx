@@ -19,7 +19,7 @@ function App() {
         = useState<{ [key: string]: string[] }>({});
 
     const [successMessage, setSuccessMessage]
-        = useState<string | null>(null);
+        = useState<boolean>(false);
 
     const fetchEmployees = async () => {
         try {
@@ -59,17 +59,25 @@ function App() {
         if (!response.ok) {
             const errorData = await response.json();
             setFormError(errorData); // Сохраняем ошибки в состоянии
+            setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
             return;
         }
 
-        // Если запрос успешен, сбрасываем ошибки и обновляем сотрудников
-        setFormError({});
-        fetchEmployees();
-         // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
-        setSuccessMessage('Employee successfully created!');
+         // Если запрос успешен, но есть ошибки валидации
+        const result = await response.json();
+        if (result && result.errors) {
+            setFormError(result.errors); // Сохраняем ошибки в состоянии
+            setSuccessMessage(false); // Сбросить сообщение об успехе
+        } else {
+            // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
+            setFormError({});
+            fetchEmployees();
+            setSuccessMessage(true); // Установить сообщение об успехе
+        }
     } catch (error) {
         console.error('Failed to add employee:', error);
-        setSuccessMessage(null); // Очистить сообщение об успехе
+        setFormError({});
+        setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
     }
 };
 

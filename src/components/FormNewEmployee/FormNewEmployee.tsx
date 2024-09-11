@@ -3,11 +3,12 @@ import styles from './FormNewEmployee.module.scss';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import {ModalSuccess} from "../Modals/ModalSuccess";
 
 interface FormNewEmployeeProps {
     onSubmit: (employeeData: any) => void;
     formError: { [key: string]: string[] }; // Ошибки, переданные с сервера
-    successMessage: string | null; // Опциональное сообщение об успехе
+    successMessage: boolean; // Опциональное сообщение об успехе
 }
 
 export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewEmployeeProps) => {
@@ -59,6 +60,8 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
                         </Form.Control.Feedback>
                     )}
                 </InputGroup>
+
+                {/*<ModalSuccess success={true}/>*/}
 
                 <InputGroup className="mb-3">
                     <InputGroup.Text>Last Name</InputGroup.Text>
@@ -262,7 +265,8 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
 
                 {successMessage && (
                     <div className={styles.textSuccess}>
-                        {successMessage}
+                        {/*{successMessage}*/}
+                        <ModalSuccess success={successMessage}/>
                     </div>
                 )}
 

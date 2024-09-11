@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, ListGroup, Button } from 'react-bootstrap';
 import styles from './CardBootstrap.module.scss';
-import {ModalDeleteButton} from "../ModalDeleteButton";
+import {ModalDeleteButton} from "../Modals/ModalDeleteButton";
 
 interface CardBootstrapProps {
     width: string;
