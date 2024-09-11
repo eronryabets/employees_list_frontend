@@ -13,7 +13,10 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'; // Им
 const BASE_URL = 'http://localhost:8005/api/employee/';
 
 function App() {
-    const [employees, setEmployees] = useState<LocalEmployee[]>([]);
+    const [employees, setEmployees]
+        = useState<LocalEmployee[]>([]);
+    const [formError, setFormError]
+        = useState<string | null>(null);
 
     const fetchEmployees = async () => {
         try {
@@ -40,23 +43,34 @@ function App() {
     };
 
      // Функция для добавления нового сотрудника
-    const addEmployee = async (employeeData: LocalEmployee) => {
-        try {
-            const res = await fetch(BASE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(employeeData),
-            });
-            if (!res.ok) {
-                throw new Error('Failed to add employee');
-            }
-            fetchEmployees(); // Обновляем список после добавления
-        } catch (error) {
-            console.error('Failed to add employee:', error);
+    const addNewEmployee = async (employeeData: any) => {
+    try {
+        const response = await fetch(BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employeeData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(JSON.stringify(errorData));
         }
-    };
+
+        // Если всё прошло успешно, обновляем список сотрудников
+        fetchEmployees();
+    } catch (error) {
+        console.error('Failed to add employee:', error);
+        // Передаем ошибку компоненту формы
+        // Явное приведение `error` к типу, который содержит `message`
+        if (error instanceof Error) {
+            setFormError(error.message);
+        } else {
+            setFormError('An unknown error occurred');
+        }
+    }
+};
 
     return (
         <Router> {/* Добавляем роутер */}
@@ -79,8 +93,9 @@ function App() {
                     />
                     <Route path="/add" element={
                         <FormNewEmployee
-                            onSubmit={addEmployee}
-                        />} /> {/* Маршрут для формы добавления */}
+                            onSubmit={addNewEmployee}
+                            formError={formError}
+                        />} />
                 </Routes>
             </Container>
         </Router>

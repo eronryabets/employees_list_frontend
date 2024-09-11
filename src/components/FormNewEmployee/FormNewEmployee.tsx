@@ -3,12 +3,14 @@ import styles from './FormNewEmployee.module.scss';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import {Alert} from "react-bootstrap";
 
 interface FormNewEmployeeProps {
     onSubmit: (employeeData: any) => void;
+    formError: string | null;
 }
 
-export const FormNewEmployee = ({ onSubmit }: FormNewEmployeeProps) => {
+export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) => {
     const [employeeData, setEmployeeData] = useState({
         first_name: '',
         last_name: '',
@@ -181,6 +183,9 @@ export const FormNewEmployee = ({ onSubmit }: FormNewEmployeeProps) => {
                         onChange={handleChange}
                     />
                 </InputGroup>
+
+                 {/* Вывод ошибки, если она есть */}
+                {formError && <Alert variant="danger">{formError}</Alert>}
 
                 <Button type="submit" variant="primary">
                     Add Employee
