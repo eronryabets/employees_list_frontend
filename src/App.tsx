@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {Container} from "./components/Container";
-import {TheHeader} from "./components/TheHeader";
 import {EmployeeCardList} from "./components/EmployeeCard";
 import {FormNewEmployee} from "./components/FormNewEmployee"; // Импортируем компонент
 import {LocalEmployee} from "./types";
@@ -15,8 +14,9 @@ const BASE_URL = 'http://localhost:8005/api/employee/';
 function App() {
     const [employees, setEmployees]
         = useState<LocalEmployee[]>([]);
+
     const [formError, setFormError]
-        = useState<string | null>(null);
+        = useState<{ [key: string]: string[] }>({});
 
     const fetchEmployees = async () => {
         try {
@@ -55,20 +55,15 @@ function App() {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
+            setFormError(errorData); // Сохраняем ошибки в состоянии
+            return;
         }
 
-        // Если всё прошло успешно, обновляем список сотрудников
+        // Если запрос успешен, сбрасываем ошибки и обновляем сотрудников
+        setFormError({});
         fetchEmployees();
     } catch (error) {
         console.error('Failed to add employee:', error);
-        // Передаем ошибку компоненту формы
-        // Явное приведение `error` к типу, который содержит `message`
-        if (error instanceof Error) {
-            setFormError(error.message);
-        } else {
-            setFormError('An unknown error occurred');
-        }
     }
 };
 

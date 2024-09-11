@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import styles from './FormNewEmployee.module.scss';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import {Alert} from "react-bootstrap";
 
 interface FormNewEmployeeProps {
     onSubmit: (employeeData: any) => void;
-    formError: string | null;
+    formError: { [key: string]: string[] }; // Ошибки, переданные с сервера
 }
 
-export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) => {
+export const FormNewEmployee = ({onSubmit, formError}: FormNewEmployeeProps) => {
     const [employeeData, setEmployeeData] = useState({
         first_name: '',
         last_name: '',
@@ -27,7 +26,7 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEmployeeData({
             ...employeeData,
             [name]: value,
@@ -51,7 +50,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="First Name"
                         value={employeeData.first_name}
                         onChange={handleChange}
+                        isInvalid={!!formError.first_name}
                     />
+                    {formError.first_name && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.first_name[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -62,7 +67,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Last Name"
                         value={employeeData.last_name}
                         onChange={handleChange}
+                        isInvalid={!!formError.last_name}
                     />
+                    {formError.last_name && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.last_name[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -73,7 +84,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Date of Birth"
                         value={employeeData.date_of_birth}
                         onChange={handleChange}
+                        isInvalid={!!formError.date_of_birth}
                     />
+                    {formError.date_of_birth && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.date_of_birth[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -85,7 +102,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Age"
                         value={employeeData.age}
                         onChange={handleChange}
+                        isInvalid={!!formError.age}
                     />
+                    {formError.age && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.age[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -96,7 +119,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Position"
                         value={employeeData.position}
                         onChange={handleChange}
+                        isInvalid={!!formError.position}
                     />
+                    {formError.position && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.position[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -107,7 +136,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Profession"
                         value={employeeData.profession}
                         onChange={handleChange}
+                        isInvalid={!!formError.profession}
                     />
+                    {formError.profession && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.profession[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -119,7 +154,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Years Worked"
                         value={employeeData.years_worked}
                         onChange={handleChange}
+                        isInvalid={!!formError.years_worked}
                     />
+                    {formError.years_worked && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.years_worked[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -131,7 +172,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Phone Number"
                         value={employeeData.phone_number}
                         onChange={handleChange}
+                        isInvalid={!!formError.phone_number}
                     />
+                    {formError.phone_number && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.phone_number[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -143,7 +190,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Email"
                         value={employeeData.email}
                         onChange={handleChange}
+                        isInvalid={!!formError.email}
                     />
+                    {formError.email && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.email[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -155,7 +208,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Facebook Link"
                         value={employeeData.facebook_link}
                         onChange={handleChange}
+                        isInvalid={!!formError.facebook_link}
                     />
+                    {formError.facebook_link && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.facebook_link[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -167,7 +226,13 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         aria-label="Avatar Link"
                         value={employeeData.avatar_link}
                         onChange={handleChange}
+                        isInvalid={!!formError.avatar_link}
                     />
+                    {formError.avatar_link && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.avatar_link[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
                 <InputGroup className="mb-3">
@@ -181,11 +246,17 @@ export const FormNewEmployee = ({ onSubmit, formError}: FormNewEmployeeProps) =>
                         max="100"
                         value={employeeData.rating}
                         onChange={handleChange}
+                        isInvalid={!!formError.rating}
                     />
+                    {formError.rating && (
+                        <Form.Control.Feedback type="invalid">
+                            {formError.rating[0]}
+                        </Form.Control.Feedback>
+                    )}
                 </InputGroup>
 
-                 {/* Вывод ошибки, если она есть */}
-                {formError && <Alert variant="danger">{formError}</Alert>}
+                {/* Вывод ошибки, если она есть */}
+                {/*{formError && <Alert variant="danger">{formError}</Alert>}*/}
 
                 <Button type="submit" variant="primary">
                     Add Employee

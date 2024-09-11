@@ -5,3 +5,11 @@
   background-color: #cbd1d7;
   padding: 15px 15px;
 }
+
+.formNewEmployee .is-invalid {
+    border-color: red;
+}
+
+.formNewEmployee .invalid-feedback {
+    color: red;
+}
