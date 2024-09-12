@@ -7,12 +7,12 @@
 
   .container {
     box-shadow: 5px 5px 15px black;
-    margin: 5px;
+    margin: 15px 0 15px;
     border: 1px solid #7c7273;
     padding: 10px;
     display: inline-block; /* Контейнер будет расширяться по своим элементам */
     max-width: 100%; /* Ограничивает максимальную ширину */
-    border-radius: 5px;
+    border-radius: 15px;
   }
 
   .textContent {

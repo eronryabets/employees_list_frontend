@@ -103,6 +103,11 @@ function App() {
                 <SimpleNavbar/>
                 <Search hasError={true} onSubmit={() => {
                 }}/>
+                <PaginationControls
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        nextPageUrl={nextPageUrl}
+                                    />
                 <Routes> {/* Добавляем маршруты */}
                     <Route
                         path="/"
