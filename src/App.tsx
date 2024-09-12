@@ -22,20 +22,34 @@ function App() {
     const [successMessage, setSuccessMessage]
         = useState<boolean>(false);
 
-    const fetchEmployees = async () => {
-        try {
-            const res = await fetch(BASE_URL);
-            const apiEmployees = await res.json();
-            const localEmployees = extractLocalEmployees(apiEmployees);
-            setEmployees(localEmployees);
-        } catch (error) {
-            console.error('Failed to fetch employees:', error);
-        }
-    };
+    const [currentPage, setCurrentPage]
+        = useState<number>(1); // Стартуем с первой страницы
+
+    const [totalCount, setTotalCount]
+        = useState<number>(0);
+
+    const [nextPageUrl, setNextPageUrl]
+        = useState<string | null>(null);
+
+    const fetchEmployees = async (page = 1) => {
+    try {
+        const res = await fetch(`${BASE_URL}?page=${page}`);
+        const apiData = await res.json();
+        const localEmployees = extractLocalEmployees(apiData.results);
+
+        setEmployees(localEmployees);
+        setTotalCount(apiData.count); // Сохраняем общее количество сотрудников
+        setNextPageUrl(apiData.next); // Сохраняем URL следующей страницы (или null)
+    } catch (error) {
+        console.error('Failed to fetch employees:', error);
+    }
+};
 
     useEffect(() => {
-        fetchEmployees();
-    }, []);
+        // Загружаем сотрудников для текущей страницы
+        fetchEmployees(currentPage);
+        // Запускать при изменении страницы
+    }, [currentPage]);
 
     const handleRatingSave = () => {
         fetchEmployees();
@@ -46,72 +60,89 @@ function App() {
             prevEmployees.filter((employee) => employee.id !== id));
     };
 
-     // Функция для добавления нового сотрудника
+    // Функция для добавления нового сотрудника
     const addNewEmployee = async (employeeData: any) => {
-    try {
-        const response = await fetch(BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(employeeData),
-        });
+        try {
+            const response = await fetch(BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employeeData),
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            setFormError(errorData); // Сохраняем ошибки в состоянии
-            setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
-            return;
-        }
+            if (!response.ok) {
+                const errorData = await response.json();
+                setFormError(errorData); // Сохраняем ошибки в состоянии
+                setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
+                return;
+            }
 
-         // Если запрос успешен, но есть ошибки валидации
-        const result = await response.json();
-        if (result && result.errors) {
-            setFormError(result.errors); // Сохраняем ошибки в состоянии
-            setSuccessMessage(false); // Сбросить сообщение об успехе
-        } else {
-            // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
+            // Если запрос успешен, но есть ошибки валидации
+            const result = await response.json();
+            if (result && result.errors) {
+                setFormError(result.errors); // Сохраняем ошибки в состоянии
+                setSuccessMessage(false); // Сбросить сообщение об успехе
+            } else {
+                // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
+                setFormError({});
+                fetchEmployees();
+                setSuccessMessage(true); // Установить сообщение об успехе
+            }
+        } catch (error) {
+            console.error('Failed to add employee:', error);
             setFormError({});
-            fetchEmployees();
-            setSuccessMessage(true); // Установить сообщение об успехе
+            setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
         }
-    } catch (error) {
-        console.error('Failed to add employee:', error);
-        setFormError({});
-        setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
-    }
-};
+    };
 
     return (
-        <Router> {/* Добавляем роутер */}
-            <Container>
-                <SimpleNavbar/>
-                <Search hasError={true} onSubmit={()=>{}}/>
-                <Routes> {/* Добавляем маршруты */}
-                    <Route
-                        path="/"
-                        element={
-                            employees.length > 0 ? (
+    <Router> {/* Добавляем роутер */}
+        <Container>
+            <SimpleNavbar/>
+            <Search hasError={true} onSubmit={()=>{}}/>
+            <Routes> {/* Добавляем маршруты */}
+                <Route
+                    path="/"
+                    element={
+                        employees.length > 0 ? (
+                            <>
                                 <EmployeeCardList
                                     employees={employees}
                                     onRatingSave={handleRatingSave}
                                     onEmployeeDelete={handleEmployeeDelete}
                                 />
-                            ) : (
-                                <Spinner/>
-                            )
-                        }
-                    />
-                    <Route path="/add" element={
-                        <FormNewEmployee
-                            onSubmit={addNewEmployee}
-                            formError={formError}
-                            successMessage={successMessage}
-                        />} />
-                </Routes>
-            </Container>
-        </Router>
-    );
+                                <div className="pagination-controls">
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </button>
+                                    <span>Page {currentPage}</span>
+                                    <button
+                                        onClick={() => setCurrentPage(prev => prev + 1)}
+                                        disabled={!nextPageUrl} // Проверяем, есть ли следующая страница
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <Spinner/>
+                        )
+                    }
+                />
+                <Route path="/add" element={
+                    <FormNewEmployee
+                        onSubmit={addNewEmployee}
+                        formError={formError}
+                        successMessage={successMessage}
+                    />} />
+            </Routes>
+        </Container>
+    </Router>
+);
 }
 
 export default App;
