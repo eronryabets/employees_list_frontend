@@ -1,1 +1,24 @@
-.paginationControls {}
+.paginationControls {
+  display: inline-block; /* Устанавливает контейнер как блочный элемент, который расширяется по внутренним элементам */
+
+  .button {
+    box-shadow: 5px 5px 15px black;
+  }
+
+  .container {
+    box-shadow: 5px 5px 15px black;
+    margin: 5px;
+    border: 1px solid #7c7273;
+    padding: 10px;
+    display: inline-block; /* Контейнер будет расширяться по своим элементам */
+    max-width: 100%; /* Ограничивает максимальную ширину */
+    border-radius: 5px;
+  }
+
+  .textContent {
+    color: rgba(34, 18, 19, 0.78);
+    font-size: 16px; /* Размер шрифта */
+    font-weight: bold; /* Толщина шрифта */
+  }
+
+}
