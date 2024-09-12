@@ -7,7 +7,8 @@ import {extractLocalEmployees} from "./utils/extract-local-employees";
 import {Spinner} from "./components/Spinner";
 import {SimpleNavbar} from "./components/SimpleNavbar";
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import {Search} from "./components/Search"; // Импортируем роутинг
+import {Search} from "./components/Search";
+import {PaginationControls} from "./components/PaginationControls"; // Импортируем роутинг
 
 
 const BASE_URL = 'http://localhost:8005/api/employee/';
@@ -32,18 +33,18 @@ function App() {
         = useState<string | null>(null);
 
     const fetchEmployees = async (page = 1) => {
-    try {
-        const res = await fetch(`${BASE_URL}?page=${page}`);
-        const apiData = await res.json();
-        const localEmployees = extractLocalEmployees(apiData.results);
+        try {
+            const res = await fetch(`${BASE_URL}?page=${page}`);
+            const apiData = await res.json();
+            const localEmployees = extractLocalEmployees(apiData.results);
 
-        setEmployees(localEmployees);
-        setTotalCount(apiData.count); // Сохраняем общее количество сотрудников
-        setNextPageUrl(apiData.next); // Сохраняем URL следующей страницы (или null)
-    } catch (error) {
-        console.error('Failed to fetch employees:', error);
-    }
-};
+            setEmployees(localEmployees);
+            setTotalCount(apiData.count); // Сохраняем общее количество сотрудников
+            setNextPageUrl(apiData.next); // Сохраняем URL следующей страницы (или null)
+        } catch (error) {
+            console.error('Failed to fetch employees:', error);
+        }
+    };
 
     useEffect(() => {
         // Загружаем сотрудников для текущей страницы
@@ -97,52 +98,43 @@ function App() {
     };
 
     return (
-    <Router> {/* Добавляем роутер */}
-        <Container>
-            <SimpleNavbar/>
-            <Search hasError={true} onSubmit={()=>{}}/>
-            <Routes> {/* Добавляем маршруты */}
-                <Route
-                    path="/"
-                    element={
-                        employees.length > 0 ? (
-                            <>
-                                <EmployeeCardList
-                                    employees={employees}
-                                    onRatingSave={handleRatingSave}
-                                    onEmployeeDelete={handleEmployeeDelete}
-                                />
-                                <div className="pagination-controls">
-                                    <button
-                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                        disabled={currentPage === 1}
-                                    >
-                                        Previous
-                                    </button>
-                                    <span>Page {currentPage}</span>
-                                    <button
-                                        onClick={() => setCurrentPage(prev => prev + 1)}
-                                        disabled={!nextPageUrl} // Проверяем, есть ли следующая страница
-                                    >
-                                        Next
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <Spinner/>
-                        )
-                    }
-                />
-                <Route path="/add" element={
-                    <FormNewEmployee
-                        onSubmit={addNewEmployee}
-                        formError={formError}
-                        successMessage={successMessage}
-                    />} />
-            </Routes>
-        </Container>
-    </Router>
-);
+        <Router> {/* Добавляем роутер */}
+            <Container>
+                <SimpleNavbar/>
+                <Search hasError={true} onSubmit={() => {
+                }}/>
+                <Routes> {/* Добавляем маршруты */}
+                    <Route
+                        path="/"
+                        element={
+                            employees.length > 0 ? (
+                                <>
+                                    <EmployeeCardList
+                                        employees={employees}
+                                        onRatingSave={handleRatingSave}
+                                        onEmployeeDelete={handleEmployeeDelete}
+                                    />
+                                    <PaginationControls
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        nextPageUrl={nextPageUrl}
+                                    />
+                                </>
+                            ) : (
+                                <Spinner/>
+                            )
+                        }
+                    />
+                    <Route path="/add" element={
+                        <FormNewEmployee
+                            onSubmit={addNewEmployee}
+                            formError={formError}
+                            successMessage={successMessage}
+                        />}/>
+                </Routes>
+            </Container>
+        </Router>
+    );
 }
 
 export default App;
