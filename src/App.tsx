@@ -6,7 +6,8 @@ import {LocalEmployee} from "./types";
 import {extractLocalEmployees} from "./utils/extract-local-employees";
 import {Spinner} from "./components/Spinner";
 import {SimpleNavbar} from "./components/SimpleNavbar";
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'; // Импортируем роутинг
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {Search} from "./components/Search"; // Импортируем роутинг
 
 
 const BASE_URL = 'http://localhost:8005/api/employee/';
@@ -85,6 +86,7 @@ function App() {
         <Router> {/* Добавляем роутер */}
             <Container>
                 <SimpleNavbar/>
+                <Search hasError={true} onSubmit={()=>{}}/>
                 <Routes> {/* Добавляем маршруты */}
                     <Route
                         path="/"
