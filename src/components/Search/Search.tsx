@@ -22,8 +22,8 @@ export const Search = ({ hasError, onSubmit }: SearchProps) => {
 
     if (text.trim()) {
       onSubmit(text);
-      event.currentTarget.reset();
-      setSearchText('');
+      // event.currentTarget.reset();
+      // setSearchText('');
     }
   };
 
