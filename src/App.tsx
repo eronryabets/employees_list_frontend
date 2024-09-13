@@ -16,41 +16,45 @@ const BASE_URL = 'http://localhost:8005/api/employee/';
 function App() {
     const [employees, setEmployees]
         = useState<LocalEmployee[]>([]);
-
     const [formError, setFormError]
         = useState<{ [key: string]: string[] }>({});
-
     const [successMessage, setSuccessMessage]
         = useState<boolean>(false);
-
     const [currentPage, setCurrentPage]
         = useState<number>(1); // Стартуем с первой страницы
-
     const [totalCount, setTotalCount]
         = useState<number>(0);
-
     const [nextPageUrl, setNextPageUrl]
         = useState<string | null>(null);
+    const [searchText, setSearchText]
+        = useState<string>('');
+    const [hasError, setHasError]
+        = useState<boolean>(false);
 
-    const fetchEmployees = async (page = 1) => {
+    const fetchEmployees = async (page = 1, search = '') => {
         try {
-            const res = await fetch(`${BASE_URL}?page=${page}`);
+            const searchParam = search ? `&search=${search}` : '';
+            const res = await fetch(`${BASE_URL}?page=${page}${searchParam}`);
             const apiData = await res.json();
-            const localEmployees = extractLocalEmployees(apiData.results);
 
+            if (apiData.results.length === 0 && search) {
+                setHasError(true);
+            } else {
+                setHasError(false);
+            }
+
+            const localEmployees = extractLocalEmployees(apiData.results);
             setEmployees(localEmployees);
-            setTotalCount(apiData.count); // Сохраняем общее количество сотрудников
-            setNextPageUrl(apiData.next); // Сохраняем URL следующей страницы (или null)
+            setTotalCount(apiData.count);
+            setNextPageUrl(apiData.next);
         } catch (error) {
             console.error('Failed to fetch employees:', error);
         }
     };
 
     useEffect(() => {
-        // Загружаем сотрудников для текущей страницы
-        fetchEmployees(currentPage);
-        // Запускать при изменении страницы
-    }, [currentPage]);
+        fetchEmployees(currentPage, searchText);
+    }, [currentPage, searchText]);
 
     const handleRatingSave = () => {
         fetchEmployees();
@@ -61,7 +65,11 @@ function App() {
             prevEmployees.filter((employee) => employee.id !== id));
     };
 
-    // Функция для добавления нового сотрудника
+    const handleSearchSubmit = (text: string) => {
+        setSearchText(text);
+        setCurrentPage(1);
+    };
+
     const addNewEmployee = async (employeeData: any) => {
         try {
             const response = await fetch(BASE_URL, {
@@ -74,46 +82,43 @@ function App() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setFormError(errorData); // Сохраняем ошибки в состоянии
-                setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
+                setFormError(errorData);
+                setSuccessMessage(false);
                 return;
             }
 
-            // Если запрос успешен, но есть ошибки валидации
             const result = await response.json();
             if (result && result.errors) {
-                setFormError(result.errors); // Сохраняем ошибки в состоянии
-                setSuccessMessage(false); // Сбросить сообщение об успехе
+                setFormError(result.errors);
+                setSuccessMessage(false);
             } else {
-                // Если всё прошло успешно, обновляем список сотрудников и показываем сообщение об успехе
                 setFormError({});
                 fetchEmployees();
-                setSuccessMessage(true); // Установить сообщение об успехе
+                setSuccessMessage(true);
             }
         } catch (error) {
             console.error('Failed to add employee:', error);
             setFormError({});
-            setSuccessMessage(false); // Сбросить сообщение об успехе при ошибке
+            setSuccessMessage(false);
         }
     };
 
     return (
-        <Router> {/* Добавляем роутер */}
+        <Router>
             <Container>
                 <SimpleNavbar/>
-                <Search hasError={true} onSubmit={() => {
-                }}/>
-                <PaginationControls
-                                        currentPage={currentPage}
-                                        setCurrentPage={setCurrentPage}
-                                        nextPageUrl={nextPageUrl}
-                                    />
-                <Routes> {/* Добавляем маршруты */}
+                <Routes>
                     <Route
                         path="/"
                         element={
                             employees.length > 0 ? (
                                 <>
+                                    <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
+                                    <PaginationControls
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        nextPageUrl={nextPageUrl}
+                                    />
                                     <EmployeeCardList
                                         employees={employees}
                                         onRatingSave={handleRatingSave}
@@ -126,7 +131,10 @@ function App() {
                                     />
                                 </>
                             ) : (
-                                <Spinner/>
+                                <>
+                                    <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
+                                    <Spinner/>
+                                </>
                             )
                         }
                     />
