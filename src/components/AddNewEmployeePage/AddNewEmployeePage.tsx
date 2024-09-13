@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {FormNewEmployee} from "../FormNewEmployee";
-
-const BASE_URL = 'http://localhost:8005/api/employee/';
+import { BASE_URL} from "../../config";
 
 export const AddNewEmployeePage = () => {
     const [formError, setFormError]

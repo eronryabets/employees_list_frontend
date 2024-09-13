@@ -1,6 +1,7 @@
 import React from 'react';
 import {LocalEmployee} from 'types';
 import {CardBootstrap} from '../CardBootstrap';
+import { BASE_URL} from "../../config";
 
 interface EmployeeCardProps extends LocalEmployee {
 }
@@ -12,7 +13,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 }) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
-            const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
+            const response = await fetch(`${BASE_URL}${id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +34,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 
     const handleEmployeeDelete = async (id: number) => {
         try {
-            const response = await fetch(`http://localhost:8005/api/employee/${id}/`, {
+            const response = await fetch(`${BASE_URL}${id}/`, {
                 method: 'DELETE'
             });
 

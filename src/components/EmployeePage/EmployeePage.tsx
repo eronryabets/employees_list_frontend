@@ -7,8 +7,9 @@ import {PaginationControls} from '../PaginationControls';
 import {Spinner} from '../Spinner';
 import {extractLocalEmployees} from "../../utils/extract-local-employees";
 import {LocalEmployee} from "../../types";
+import { BASE_URL} from "../../config";
 
-const BASE_URL = 'http://localhost:8005/api/employee/';
+
 export const EmployeePage = () => {
     const [employees, setEmployees] = useState<LocalEmployee[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
