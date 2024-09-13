@@ -23,7 +23,7 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
         phone_number: '',
         email: '',
         facebook_link: '',
-        avatar_link: '',
+        avatar: '',
         rating: 0,
     });
 
@@ -222,19 +222,19 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
                 </InputGroup>
 
                 <InputGroup className="mb-3">
-                    <InputGroup.Text>Avatar Link</InputGroup.Text>
+                    <InputGroup.Text>Avatar</InputGroup.Text>
                     <Form.Control
-                        name="avatar_link"
+                        name="avatar"
                         type="url"
-                        placeholder="Avatar Link"
-                        aria-label="Avatar Link"
-                        value={employeeData.avatar_link}
+                        placeholder="Avatar"
+                        aria-label="Avatar"
+                        value={employeeData.avatar}
                         onChange={handleChange}
-                        isInvalid={!!formError.avatar_link}
+                        isInvalid={!!formError.avatar}
                     />
-                    {formError.avatar_link && (
+                    {formError.avatar && (
                         <Form.Control.Feedback type="invalid">
-                            {formError.avatar_link[0]}
+                            {formError.avatar[0]}
                         </Form.Control.Feedback>
                     )}
                 </InputGroup>

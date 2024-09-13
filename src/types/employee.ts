@@ -7,7 +7,7 @@ export type LocalEmployee = {
     years_worked: number,
     email: string,
     facebook_link: string,
-    avatar_link: string,
+    avatar: string,
     rating: number,
 }
 
@@ -23,7 +23,7 @@ export type ApiEmployee = {
     phone_number: string,
     email: string,
     facebook_link: string,
-    avatar_link: string,
+    avatar: string,
     rating: number,
 }
 

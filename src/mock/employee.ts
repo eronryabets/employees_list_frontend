@@ -9,6 +9,6 @@ export const defaultEmployee: LocalEmployee = {
     years_worked: 15,
     email: 'mock@mock.com',
     facebook_link: 'https://mock.com/223/td2',
-    avatar_link: 'https://avatars.githubusercontent.com/u/23005495?v=4',
+    avatar: 'http://localhost:8005/media/avatars/ava.png',
     rating: 44,
 }
