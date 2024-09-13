@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {FormNewEmployee} from "../FormNewEmployee";
-import { BASE_URL} from "../../config";
+import {BASE_URL} from "../../config";
 
 export const AddNewEmployeePage = () => {
     const [formError, setFormError]
@@ -10,12 +10,17 @@ export const AddNewEmployeePage = () => {
 
     const addNewEmployee = async (employeeData: any) => {
         try {
+            const formData = new FormData();
+            for (const key in employeeData) {
+                formData.append(key, employeeData[key]);
+            }
+
             const response = await fetch(BASE_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+
                 },
-                body: JSON.stringify(employeeData),
+                body: formData,
             });
 
             if (!response.ok) {

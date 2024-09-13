@@ -11,7 +11,7 @@ interface FormNewEmployeeProps {
     successMessage: boolean; // Опциональное сообщение об успехе
 }
 
-export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewEmployeeProps) => {
+export const FormNewEmployee = ({onSubmit, formError, successMessage}: FormNewEmployeeProps) => {
     const [employeeData, setEmployeeData] = useState({
         first_name: '',
         last_name: '',
@@ -39,6 +39,14 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
         e.preventDefault();
         onSubmit(employeeData);
         // Передаем данные о сотруднике в родительский компонент
+    };
+
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+        setEmployeeData({
+            ...employeeData,
+            avatar: file,
+        });
     };
 
     return (
@@ -221,15 +229,12 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
                     )}
                 </InputGroup>
 
-                <InputGroup className="mb-3">
-                    <InputGroup.Text>Avatar</InputGroup.Text>
+                <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Upload your profile photo</Form.Label>
                     <Form.Control
+                        type="file"
                         name="avatar"
-                        type="url"
-                        placeholder="Avatar"
-                        aria-label="Avatar"
-                        value={employeeData.avatar}
-                        onChange={handleChange}
+                        onChange={handleFileChange}
                         isInvalid={!!formError.avatar}
                     />
                     {formError.avatar && (
@@ -237,7 +242,7 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage }: FormNewE
                             {formError.avatar[0]}
                         </Form.Control.Feedback>
                     )}
-                </InputGroup>
+                </Form.Group>
 
                 <InputGroup className="mb-3">
                     <InputGroup.Text>Rating</InputGroup.Text>
