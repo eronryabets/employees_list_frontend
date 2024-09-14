@@ -9,6 +9,7 @@ import {LocalEmployee} from "../../types";
 import {BASE_URL_EMP} from "../../config";
 import {SortingOptions} from "../SortingOptions";
 import styles from './EmployeePage.module.scss'
+import {Helmet} from "react-helmet-async";
 
 
 export const EmployeePage = () => {
@@ -103,6 +104,9 @@ export const EmployeePage = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>Employee List</title>
+            </Helmet>
             <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
             {employees.length > 0 ? (
                 <>
