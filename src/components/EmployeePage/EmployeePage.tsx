@@ -1,4 +1,3 @@
-
 import React, {useEffect, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {Search} from "../Search";
@@ -7,7 +6,9 @@ import {PaginationControls} from '../PaginationControls';
 import {Spinner} from '../Spinner';
 import {extractLocalEmployees} from "../../utils/extract-local-employees";
 import {LocalEmployee} from "../../types";
-import { BASE_URL_EMP} from "../../config";
+import {BASE_URL_EMP} from "../../config";
+import {SortingOptions} from "../SortingOptions";
+import styles from './EmployeePage.module.scss'
 
 
 export const EmployeePage = () => {
@@ -76,11 +77,16 @@ export const EmployeePage = () => {
             <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
             {employees.length > 0 ? (
                 <>
-                    <PaginationControls
+
+                    <div className={styles.content}>
+                      <PaginationControls
                         currentPage={currentPage}
                         setCurrentPage={setCurrentPage}
                         nextPageUrl={nextPageUrl}
                     />
+                    <SortingOptions/>
+                    </div>
+
                     <EmployeeCardList
                         employees={employees}
                         onRatingSave={handleRatingSave}
@@ -92,12 +98,12 @@ export const EmployeePage = () => {
                         nextPageUrl={nextPageUrl}
                     />
                 </>
-            ) : (
+                ) : (
                 <>
                     <Spinner/>
                     {hasError && <p>No employees found.</p>}
                 </>
-            )}
-        </div>
-    );
-};
+                )}
+                </div>
+            );
+            };

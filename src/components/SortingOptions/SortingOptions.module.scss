@@ -1,0 +1,28 @@
+
+.sortingOptions {
+  display: inline-block; /* Устанавливает контейнер как блочный элемент, который расширяется по внутренним элементам */
+
+  .button {
+    box-shadow: 5px 5px 15px black;
+    margin: 0 10px 0;
+  }
+
+  .container {
+    box-shadow: 5px 5px 15px black;
+    //margin: 15px 0 15px;
+    margin-left: 25px;
+    border: 1px solid #7c7273;
+    padding: 10px;
+    display: inline-block; /* Контейнер будет расширяться по своим элементам */
+    max-width: 100%; /* Ограничивает максимальную ширину */
+    border-radius: 15px;
+  }
+
+  .textContent {
+    color: rgba(34, 18, 19, 0.78);
+    font-size: 16px; /* Размер шрифта */
+    font-weight: bold; /* Толщина шрифта */
+  }
+
+}
+
