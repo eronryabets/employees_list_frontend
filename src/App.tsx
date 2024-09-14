@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import {EmployeePage} from "./components/EmployeePage";
 import {AddNewEmployeePage} from "./components/AddNewEmployeePage";
 import {HelmetProvider} from 'react-helmet-async';
+import {NotFoundPage} from "./components/NotFoundPage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<EmployeePage/>}/>
                         <Route path="/add" element={<AddNewEmployeePage/>}/>
+                        <Route path="*" element={<NotFoundPage/>}/>
                     </Routes>
                 </Container>
             </Router>
