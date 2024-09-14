@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {FormNewEmployee} from "../FormNewEmployee";
-import {BASE_URL} from "../../config";
+import {BASE_URL_EMP} from "../../config";
 
 export const AddNewEmployeePage = () => {
     const [formError, setFormError]
@@ -15,7 +15,7 @@ export const AddNewEmployeePage = () => {
                 formData.append(key, employeeData[key]);
             }
 
-            const response = await fetch(BASE_URL, {
+            const response = await fetch(BASE_URL_EMP, {
                 method: 'POST',
                 headers: {
 

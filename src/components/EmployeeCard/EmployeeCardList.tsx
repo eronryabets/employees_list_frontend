@@ -1,7 +1,7 @@
 import React from 'react';
 import {LocalEmployee} from 'types';
 import {CardBootstrap} from '../CardBootstrap';
-import { BASE_URL} from "../../config";
+import {BASE_URL_EMP, DEFAULT_AVATAR} from "../../config";
 
 interface EmployeeCardProps extends LocalEmployee {
 }
@@ -13,7 +13,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 }) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
-            const response = await fetch(`${BASE_URL}${id}/`, {
+            const response = await fetch(`${BASE_URL_EMP}${id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 
     const handleEmployeeDelete = async (id: number) => {
         try {
-            const response = await fetch(`${BASE_URL}${id}/`, {
+            const response = await fetch(`${BASE_URL_EMP}${id}/`, {
                 method: 'DELETE'
             });
 
@@ -57,7 +57,8 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
                     key={employee.id}
                     width={'auto'}
                     variant={'top'}
-                    img_src={employee.avatar}
+                    // img_src={employee.avatar}
+                    img_src={employee.avatar ? employee.avatar : `${DEFAULT_AVATAR}`}
                     card_title={`${employee.first_name} ${employee.last_name}`}
                     card_text={`Good man! Very interesting person :)`}
                     card_row_text={[
@@ -69,7 +70,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
                     card_links={[{url: "https://example.com", label: "Link"}]}
                     initialRating={employee.rating}
                     onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Сохранение
-                    onDelete={()=>handleEmployeeDelete(employee.id)} // Удаление
+                    onDelete={() => handleEmployeeDelete(employee.id)} // Удаление
                 />
             ))}
         </div>

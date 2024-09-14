@@ -7,7 +7,7 @@ import {PaginationControls} from '../PaginationControls';
 import {Spinner} from '../Spinner';
 import {extractLocalEmployees} from "../../utils/extract-local-employees";
 import {LocalEmployee} from "../../types";
-import { BASE_URL} from "../../config";
+import { BASE_URL_EMP} from "../../config";
 
 
 export const EmployeePage = () => {
@@ -22,7 +22,7 @@ export const EmployeePage = () => {
     const fetchEmployees = async (page = 1, search = '') => {
         try {
             const searchParam = search ? `&search=${search}` : '';
-            const res = await fetch(`${BASE_URL}?page=${page}${searchParam}`);
+            const res = await fetch(`${BASE_URL_EMP}?page=${page}${searchParam}`);
             const apiData = await res.json();
 
             if (apiData.results.length === 0 && search) {
