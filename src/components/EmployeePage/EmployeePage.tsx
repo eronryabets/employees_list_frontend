@@ -19,11 +19,22 @@ export const EmployeePage = () => {
     const [searchText, setSearchText] = useState<string>('');
     const [hasError, setHasError] = useState<boolean>(false);
     const location = useLocation();
+    const [ageFlag, setAgeFlag] = useState<boolean>(false)
+    const [ratingFlag, setRatingFlag] = useState<boolean>(false)
 
-    const fetchEmployees = async (page = 1, search = '') => {
+    const fetchEmployees = async (page = 1,
+                                  search = '',
+                                  age = false,
+                                  rating = false) => {
         try {
             const searchParam = search ? `&search=${search}` : '';
-            const res = await fetch(`${BASE_URL_EMP}?page=${page}${searchParam}`);
+            const ageParam = age ? `&sort_by=age` : '';
+            const ratingParam = rating ? `&sort_by=rating` : '';
+            const res = await fetch(`${BASE_URL_EMP}?page=
+            ${page}
+            ${searchParam}
+            ${ageParam}
+            ${ratingParam}`);
             const apiData = await res.json();
 
             if (apiData.results.length === 0 && search) {
@@ -43,13 +54,15 @@ export const EmployeePage = () => {
 
     useEffect(() => {
         // Загружаем сотрудников при изменении searchText или currentPage
-        fetchEmployees(currentPage, searchText);
-    }, [currentPage, searchText]);
+        fetchEmployees(currentPage, searchText, ageFlag, ratingFlag);
+    }, [currentPage, searchText, ageFlag, ratingFlag]);
 
     useEffect(() => {
         // Сбрасываем поиск при переходе на главную страницу
         if (location.pathname === '/') {
             resetSearch(); // Сбрасываем поиск
+            resetAgeSort(); //Сбрасываем сортировку по возрасту
+            resetRatingSort(); //Сбрасываем сортировку по рейтингу
         }
     }, [location]);
 
@@ -62,6 +75,22 @@ export const EmployeePage = () => {
         setSearchText(''); // Сброс текста поиска
         setCurrentPage(1); // Сбрасываем страницу на первую
     };
+
+    const handleAgeSort = () => {
+        setAgeFlag(!ageFlag);
+    }
+
+    const resetAgeSort = () => {
+        setAgeFlag(false);
+    }
+
+    const handleRatingSort = () => {
+        setRatingFlag(!ratingFlag);
+    }
+
+    const resetRatingSort = () => {
+        setRatingFlag(false);
+    }
 
     const handleRatingSave = () => {
         fetchEmployees();
@@ -84,7 +113,8 @@ export const EmployeePage = () => {
                         setCurrentPage={setCurrentPage}
                         nextPageUrl={nextPageUrl}
                     />
-                    <SortingOptions/>
+                    <SortingOptions ageSort={handleAgeSort}
+                                    ratingSort={handleRatingSort}/>
                     </div>
 
                     <EmployeeCardList
