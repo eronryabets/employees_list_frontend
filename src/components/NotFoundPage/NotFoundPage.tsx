@@ -8,30 +8,42 @@ import {NotFoundAnimations} from "./NotFoundAnimations";  // Импорт anime.
 export const NotFoundPage = () => {
 
         useEffect(() => {
-        // Анимация для svg
-        anime({
-            targets: '.row svg',
-            translateY: 10,
-            autoplay: true,
-            loop: true,
-            easing: 'easeInOutSine',
-            direction: 'alternate'
-        });
+    // Анимация для svg
+    anime({
+        targets: '.row svg',
+        translateY: 10,
+        autoplay: true,
+        loop: true,
+        easing: 'easeInOutSine',
+        direction: 'alternate'
+    });
 
-        // Анимация для элемента с id "zero"
-        anime({
-            targets: '#zero',
-            translateX: 10,
-            autoplay: true,
-            loop: true,
-            easing: 'easeInOutSine',
-            direction: 'alternate',
-            // scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
-            // rotateY: { value: '+=180', delay: 200 },
-        });
-    }, []); // useEffect чтобы анимация запускалась только при монтировании компонента
+    // Анимация для элемента с id "zero"
+    anime({
+        targets: '#zero',
+        translateX: 10,
+        autoplay: true,
+        loop: true,
+        easing: 'easeInOutSine',
+        direction: 'alternate',
+        // scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
+        rotateY: { value: '+=180', delay: 250 },
+        // Устанавливаем transform-origin на центр элемента
+        begin: function(anim) {
+            const target = document.getElementById('zero');
+            if (target) {
+                target.style.transformOrigin = 'center center';
+                // Применение transform-origin
+            }
+        },
+    });
+
+}, []); // useEffect чтобы анимация запускалась только при монтировании компонента
+
+
+
     return (
-        <div className={styles.NotFoundPage}>
+        <div className={styles.notFoundPage}>
            <NotFoundAnimations/>
             <Link to="/">Go Back to Home</Link>
         </div>
