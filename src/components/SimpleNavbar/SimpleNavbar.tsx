@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 
 export const SimpleNavbar = () => {
     return (
+        <div className={styles.simpleNavbar}>
             <Navbar expand="lg" className={classNames('bg-body-tertiary', styles.main)}>
                 <Container>
                     <Navbar.Brand as={Link} to="/">Employees</Navbar.Brand>
@@ -34,5 +35,6 @@ export const SimpleNavbar = () => {
                     <ThemeSwitcher/>
                 </Container>
             </Navbar>
+             </div>
     );
 };
