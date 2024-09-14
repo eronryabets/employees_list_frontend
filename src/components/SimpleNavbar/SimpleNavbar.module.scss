@@ -5,4 +5,17 @@
     margin: 0 2px 5px;
     box-shadow: 5px 5px 15px black;
   }
+
+  .default {
+    box-shadow: 5px 5px 15px black;
+    border-radius: 10px;
+  }
+
+  .active {
+    //background-color: darkgreen !important; // Зеленый фон для активного состояния
+    color: black !important;
+    box-shadow: 5px 5px 15px darkgreen;
+    border-radius: 10px;
+    border: 1px solid darkgreen; /* Добавляем обводку в 1 пиксель */
+  }
 }
