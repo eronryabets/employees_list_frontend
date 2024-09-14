@@ -27,6 +27,21 @@ export type ApiEmployee = {
     rating: number,
 }
 
+export type FormAddEmployee = {
+    first_name: string,
+    last_name: string,
+    age: number,
+    date_of_birth: string,
+    position: string,
+    profession: string,
+    years_worked: number,
+    phone_number: string,
+    email: string,
+    facebook_link: string,
+    avatar: string | File,
+    rating: number,
+}
+
 export type ApiEmployeeError = {
     message: string,
     documentation_url: string,

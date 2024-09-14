@@ -7,10 +7,8 @@ import classNames from 'classnames';
 import {ThemeSwitcher} from "../ThemeSwitcher";
 import { Link } from 'react-router-dom';
 
-interface SimpleNavbarProps {
-}
 
-export const SimpleNavbar = ({}: SimpleNavbarProps) => {
+export const SimpleNavbar = () => {
     return (
         <div className={styles.simpleNavbar}>
             <Navbar expand="lg" className={classNames('bg-body-tertiary', styles.main)}>

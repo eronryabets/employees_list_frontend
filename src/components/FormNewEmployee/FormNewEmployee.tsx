@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
+import {v4 as uuidv4} from 'uuid';
 import styles from './FormNewEmployee.module.scss';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import {ModalSuccess} from "../Modals/ModalSuccess";
+import {FormAddEmployee} from "../../types";
 
 interface FormNewEmployeeProps {
     onSubmit: (employeeData: any) => void;
@@ -12,7 +14,7 @@ interface FormNewEmployeeProps {
 }
 
 export const FormNewEmployee = ({onSubmit, formError, successMessage}: FormNewEmployeeProps) => {
-    const [employeeData, setEmployeeData] = useState({
+    const [employeeData, setEmployeeData] = useState<FormAddEmployee>({
         first_name: '',
         last_name: '',
         date_of_birth: '',
@@ -41,13 +43,20 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage}: FormNewEm
         // Передаем данные о сотруднике в родительский компонент
     };
 
-    const handleFileChange = (event: any) => {
-        const file = event.target.files[0];
-        setEmployeeData({
-            ...employeeData,
-            avatar: file,
-        });
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]; // Получаем загруженный файл
+        if (file) {
+            // Генерируем уникальное имя файла с UUID
+            const uniqueFileName = `${uuidv4()}-${file.name}`;
+            // Создаем новый объект File с измененным именем
+            const newFile = new File([file], uniqueFileName, {type: file.type});
+            setEmployeeData({
+                ...employeeData,
+                avatar: newFile, // Устанавливаем файл с новым именем
+            });
+        }
     };
+
 
     return (
         <div className={styles.formNewEmployee}>
