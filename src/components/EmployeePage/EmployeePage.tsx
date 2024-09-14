@@ -114,7 +114,9 @@ export const EmployeePage = () => {
                         nextPageUrl={nextPageUrl}
                     />
                     <SortingOptions ageSort={handleAgeSort}
-                                    ratingSort={handleRatingSort}/>
+                                    ratingSort={handleRatingSort}
+                                    ageFlag={ageFlag}
+                                    ratingFlag={ratingFlag}/>
                     </div>
 
                     <EmployeeCardList
