@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import styles from './LoginForm.module.scss';
-import {ACCOUNT_URL} from "../../config";
+import { ACCOUNT_URL } from "../../config";
 
-interface LoginFormProps {
-}
+interface LoginFormProps {}
 
 export const LoginForm = ({}: LoginFormProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -18,23 +19,23 @@ export const LoginForm = ({}: LoginFormProps) => {
         };
 
         try {
-            const response = await fetch(`${ACCOUNT_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            });
+            const response =
+                await axios.post(`${ACCOUNT_URL}login/`, userData);
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            const { access, refresh } = response.data;
 
-            const data = await response.json();
-            console.log('Login successful:', data);
+            // Сохраняем токены в localStorage
+            localStorage.setItem('accessToken', access);
+            localStorage.setItem('refreshToken', refresh);
+
+            console.log('Login successful:', response.data);
+
+            // Перенаправление на защищенную страницу
+            window.location.href = '/';
 
         } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
+            setErrorMessage('Login failed, please try again.');
+            console.error('Login error:', error);
         }
     };
 
@@ -49,7 +50,8 @@ export const LoginForm = ({}: LoginFormProps) => {
                         placeholder="Username"
                         required
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) =>
+                            setUsername(e.target.value)}
                         className={styles.input}
                     />
                     <input
@@ -58,7 +60,8 @@ export const LoginForm = ({}: LoginFormProps) => {
                         placeholder="Password"
                         required
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) =>
+                            setPassword(e.target.value)}
                         className={styles.input}
                     />
                     <button type="submit" className={`
@@ -69,6 +72,7 @@ export const LoginForm = ({}: LoginFormProps) => {
                         Let me in
                     </button>
                 </form>
+                {errorMessage && <p className={styles.error}>{errorMessage}</p>}
             </div>
         </div>
     );

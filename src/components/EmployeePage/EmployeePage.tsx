@@ -6,11 +6,10 @@ import {PaginationControls} from '../PaginationControls';
 import {Spinner} from '../Spinner';
 import {extractLocalEmployees} from "../../utils/extract-local-employees";
 import {LocalEmployee} from "../../types";
-import {BASE_URL_EMP} from "../../config";
 import {SortingOptions} from "../SortingOptions";
 import styles from './EmployeePage.module.scss'
 import {Helmet} from "react-helmet-async";
-
+import api from '../../api/api';
 
 export const EmployeePage = () => {
     const [employees, setEmployees] = useState<LocalEmployee[]>([]);
@@ -27,31 +26,29 @@ export const EmployeePage = () => {
                                   search = '',
                                   age = false,
                                   rating = false) => {
-        try {
-            const searchParam = search ? `&search=${search}` : '';
-            const ageParam = age ? `&sort_by=age` : '';
-            const ratingParam = rating ? `&sort_by=rating` : '';
-            const res = await fetch(`${BASE_URL_EMP}?page=
-            ${page}
-            ${searchParam}
-            ${ageParam}
-            ${ratingParam}`);
-            const apiData = await res.json();
+    try {
+        const searchParam = search ? `&search=${search}` : '';
+        const ageParam = age ? `&sort_by=age` : '';
+        const ratingParam = rating ? `&sort_by=rating` : '';
 
-            if (apiData.results.length === 0 && search) {
-                setHasError(true);
-            } else {
-                setHasError(false);
-            }
+        const response =
+            await api.get(`?page=${page}${searchParam}${ageParam}${ratingParam}`);
 
-            const localEmployees = extractLocalEmployees(apiData.results);
-            setEmployees(localEmployees);
-            setTotalCount(apiData.count);
-            setNextPageUrl(apiData.next);
-        } catch (error) {
-            console.error('Failed to fetch employees:', error);
+        const apiData = response.data;
+        if (apiData.results.length === 0 && search) {
+            setHasError(true);
+        } else {
+            setHasError(false);
         }
-    };
+
+        const localEmployees = extractLocalEmployees(apiData.results);
+        setEmployees(localEmployees);
+        setTotalCount(apiData.count);
+        setNextPageUrl(apiData.next);
+    } catch (error) {
+        console.error('Failed to fetch employees:', error);
+    }
+};
 
     useEffect(() => {
         // Загружаем сотрудников при изменении searchText или currentPage
@@ -110,17 +107,16 @@ export const EmployeePage = () => {
             <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
             {employees.length > 0 ? (
                 <>
-
                     <div className={styles.content}>
-                      <PaginationControls
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        nextPageUrl={nextPageUrl}
-                    />
-                    <SortingOptions ageSort={handleAgeSort}
-                                    ratingSort={handleRatingSort}
-                                    ageFlag={ageFlag}
-                                    ratingFlag={ratingFlag}/>
+                        <PaginationControls
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            nextPageUrl={nextPageUrl}
+                        />
+                        <SortingOptions ageSort={handleAgeSort}
+                                        ratingSort={handleRatingSort}
+                                        ageFlag={ageFlag}
+                                        ratingFlag={ratingFlag}/>
                     </div>
 
                     <EmployeeCardList
@@ -134,12 +130,12 @@ export const EmployeePage = () => {
                         nextPageUrl={nextPageUrl}
                     />
                 </>
-                ) : (
+            ) : (
                 <>
                     <Spinner/>
                     {hasError && <p>No employees found.</p>}
                 </>
-                )}
-                </div>
-            );
-            };
+            )}
+        </div>
+    );
+};
