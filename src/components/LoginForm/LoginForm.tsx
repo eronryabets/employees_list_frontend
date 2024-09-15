@@ -3,9 +3,9 @@ import axios from 'axios';
 import styles from './LoginForm.module.scss';
 import { ACCOUNT_URL } from "../../config";
 
-interface LoginFormProps {}
 
-export const LoginForm = ({}: LoginFormProps) => {
+
+export const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');

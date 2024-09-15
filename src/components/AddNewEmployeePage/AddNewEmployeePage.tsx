@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {FormNewEmployee} from "../FormNewEmployee";
-import {BASE_URL_EMP} from "../../config";
 import {Helmet} from "react-helmet-async";
+import api from "../../api/api";
 
 export const AddNewEmployeePage = () => {
     const [formError, setFormError]
@@ -16,31 +16,26 @@ export const AddNewEmployeePage = () => {
                 formData.append(key, employeeData[key]);
             }
 
-            const response = await fetch(BASE_URL_EMP, {
-                method: 'POST',
-                headers: {},
-                body: formData,
+            const response = await api.post('/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Для отправки файлов
+                },
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                setFormError(errorData);
-                setSuccessMessage(false);
-                return;
-            }
-
-            const result = await response.json();
-            if (result && result.errors) {
-                setFormError(result.errors);
+            if (response.data && response.data.errors) {
+                setFormError(response.data.errors);
                 setSuccessMessage(false);
             } else {
                 setFormError({});
-                // fetchEmployees();
-                setSuccessMessage(true);
+                setSuccessMessage(true); // Успешное добавление
             }
-        } catch (error) {
-            console.error('Failed to add employee:', error);
-            setFormError({});
+        } catch (error: any) {
+            if (error.response && error.response.data) {
+                setFormError(error.response.data);
+            } else {
+                console.error('Failed to add employee:', error);
+                setFormError({});
+            }
             setSuccessMessage(false);
         }
     };

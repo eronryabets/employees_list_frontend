@@ -1,7 +1,8 @@
 import React from 'react';
 import {LocalEmployee} from 'types';
 import {CardBootstrap} from '../CardBootstrap';
-import {BASE_URL_EMP, DEFAULT_AVATAR} from "../../config";
+import {DEFAULT_AVATAR} from "../../config";
+import api from "../../api/api";
 
 interface EmployeeCardProps extends LocalEmployee {
 }
@@ -13,20 +14,15 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 }) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
-            const response = await fetch(`${BASE_URL_EMP}${id}/`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({rating: newRating}),
-            });
+            const response =
+                await api.patch(`${id}/`, {rating: newRating});
 
-            if (!response.ok) {
+            if (response.status !== 200) {
                 throw new Error('Failed to save rating');
             }
 
             console.log(`Rating for employee ${id} saved: ${newRating}`);
-            onRatingSave(); // Обновление данных после сохранения
+            onRatingSave();
         } catch (error) {
             console.error('Error saving rating:', error);
         }
@@ -34,16 +30,13 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
 
     const handleEmployeeDelete = async (id: number) => {
         try {
-            const response = await fetch(`${BASE_URL_EMP}${id}/`, {
-                method: 'DELETE'
-            });
+            const response = await api.delete(`${id}/`);
 
-            if (!response.ok) {
+            if (response.status !== 204) {
                 throw new Error('Failed to delete employee');
             }
 
             console.log(`Employee deleted`);
-            // Обновляем состояние, удаляя сотрудника
             onEmployeeDelete(id);
         } catch (error) {
             console.error('Error delete employee:', error);
@@ -57,20 +50,18 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
                     key={employee.id}
                     width={'auto'}
                     variant={'top'}
-                    // img_src={employee.avatar}
                     img_src={employee.avatar ? employee.avatar : `${DEFAULT_AVATAR}`}
                     card_title={`${employee.first_name} ${employee.last_name}`}
                     card_text={`Good man! Very interesting person :)`}
                     card_row_text={[
                         `Age: ${employee.age}`,
                         `Position: ${employee.position}`,
-                        // Рейтинг теперь передается через initialRating
                         `Rating: ${employee.rating}`,
                     ]}
                     card_links={[{url: "https://example.com", label: "Link"}]}
                     initialRating={employee.rating}
-                    onSave={(newRating) => handleSaveRating(employee.id, newRating)} // Сохранение
-                    onDelete={() => handleEmployeeDelete(employee.id)} // Удаление
+                    onSave={(newRating) => handleSaveRating(employee.id, newRating)}
+                    onDelete={() => handleEmployeeDelete(employee.id)}
                 />
             ))}
         </div>
