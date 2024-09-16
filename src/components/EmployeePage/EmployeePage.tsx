@@ -1,141 +1,83 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation} from 'react-router-dom';
-import {Search} from "../Search";
-import {EmployeeCardList} from '../EmployeeCard';
-import {PaginationControls} from '../PaginationControls';
-import {Spinner} from '../Spinner';
-import {extractLocalEmployees} from "../../utils/extract-local-employees";
-import {LocalEmployee} from "../../types";
-import {SortingOptions} from "../SortingOptions";
-import styles from './EmployeePage.module.scss'
-import {Helmet} from "react-helmet-async";
-import api from '../../api/api';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Search } from "../Search";
+import { EmployeeCardList } from '../EmployeeCard';
+import { PaginationControls } from '../PaginationControls';
+import { Spinner } from '../Spinner';
+import { SortingOptions } from "../SortingOptions";
+import styles from './EmployeePage.module.scss';
+import { Helmet } from "react-helmet-async";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from 'store/store';
+import {
+  fetchEmployees,
+  resetFilters,
+  setCurrentPage,
+} from '../../slices/employeeSlice';
 
 export const EmployeePage = () => {
-    const [employees, setEmployees] = useState<LocalEmployee[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [totalCount, setTotalCount] = useState<number>(0);
-    const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
-    const [searchText, setSearchText] = useState<string>('');
-    const [hasError, setHasError] = useState<boolean>(false);
-    const location = useLocation();
-    const [ageFlag, setAgeFlag] = useState<boolean>(false)
-    const [ratingFlag, setRatingFlag] = useState<boolean>(false)
+  const dispatch: AppDispatch = useDispatch();
+  const {
+    employees,
+    currentPage,
+    searchText,
+    ageFlag,
+    ratingFlag,
+    loading,
+  } = useSelector((state: RootState) => state.employees);
 
-    const fetchEmployees = async (page = 1,
-                                  search = '',
-                                  age = false,
-                                  rating = false) => {
-    try {
-        const searchParam = search ? `&search=${search}` : '';
-        const ageParam = age ? `&sort_by=age` : '';
-        const ratingParam = rating ? `&sort_by=rating` : '';
+  const location = useLocation();
 
-        const response =
-            await api.get(`?page=${page}${searchParam}${ageParam}${ratingParam}`);
+  useEffect(() => {
+    // Загружаем сотрудников при изменении searchText или currentPage
+    dispatch(fetchEmployees({
+      page: currentPage,
+      search: searchText,
+      age: ageFlag, rating:
+      ratingFlag }));
+  }, [dispatch, currentPage, searchText, ageFlag, ratingFlag]);
 
-        const apiData = response.data;
-        if (apiData.results.length === 0 && search) {
-            setHasError(true);
-        } else {
-            setHasError(false);
-        }
-
-        const localEmployees = extractLocalEmployees(apiData.results);
-        setEmployees(localEmployees);
-        setTotalCount(apiData.count);
-        setNextPageUrl(apiData.next);
-    } catch (error) {
-        console.error('Failed to fetch employees:', error);
+  useEffect(() => {
+    // Сбрасываем фильтры при переходе на главную страницу
+    if (location.pathname === '/') {
+      dispatch(resetFilters());
+      dispatch(setCurrentPage(1));
     }
-};
+  }, [location, dispatch]);
 
-    useEffect(() => {
-        // Загружаем сотрудников при изменении searchText или currentPage
-        fetchEmployees(currentPage, searchText, ageFlag, ratingFlag);
-    }, [currentPage, searchText, ageFlag, ratingFlag]);
 
-    useEffect(() => {
-        // Сбрасываем поиск при переходе на главную страницу
-        if (location.pathname === '/') {
-            resetSearch(); // Сбрасываем поиск
-            resetAgeSort(); //Сбрасываем сортировку по возрасту
-            resetRatingSort(); //Сбрасываем сортировку по рейтингу
-        }
-    }, [location]);
+  const handleRatingSave = () => {
+    dispatch(fetchEmployees({
+      page: currentPage,
+      search: searchText,
+      age: ageFlag,
+      rating: ratingFlag }));
+  };
 
-    const handleSearchSubmit = (text: string) => {
-        setSearchText(text);
-        setCurrentPage(1);
-    };
 
-    const resetSearch = () => {
-        setSearchText(''); // Сброс текста поиска
-        setCurrentPage(1); // Сбрасываем страницу на первую
-    };
-
-    const handleAgeSort = () => {
-        setAgeFlag(!ageFlag);
-    }
-
-    const resetAgeSort = () => {
-        setAgeFlag(false);
-    }
-
-    const handleRatingSort = () => {
-        setRatingFlag(!ratingFlag);
-    }
-
-    const resetRatingSort = () => {
-        setRatingFlag(false);
-    }
-
-    const handleRatingSave = () => {
-        fetchEmployees();
-    };
-
-    const handleEmployeeDelete = (id: number) => {
-        setEmployees((prevEmployees) =>
-            prevEmployees.filter((employee) => employee.id !== id));
-    };
-
-    return (
-        <div>
-            <Helmet>
-                <title>Employee List</title>
-            </Helmet>
-            <Search hasError={hasError} onSubmit={handleSearchSubmit}/>
-            {employees.length > 0 ? (
-                <>
-                    <div className={styles.content}>
-                        <PaginationControls
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                            nextPageUrl={nextPageUrl}
-                        />
-                        <SortingOptions ageSort={handleAgeSort}
-                                        ratingSort={handleRatingSort}
-                                        ageFlag={ageFlag}
-                                        ratingFlag={ratingFlag}/>
-                    </div>
-
-                    <EmployeeCardList
-                        employees={employees}
-                        onRatingSave={handleRatingSave}
-                        onEmployeeDelete={handleEmployeeDelete}
-                    />
-                    <PaginationControls
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        nextPageUrl={nextPageUrl}
-                    />
-                </>
-            ) : (
-                <>
-                    <Spinner/>
-                    {hasError && <p>No employees found.</p>}
-                </>
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <Helmet>
+        <title>Employee List</title>
+      </Helmet>
+      <Search/>
+      {loading ? (
+        <Spinner />
+      ) : employees.length > 0 ? (
+        <>
+          <div className={styles.content}>
+            <PaginationControls/>
+            <SortingOptions/>
+          </div>
+          <EmployeeCardList
+            employees={employees}
+            onRatingSave={handleRatingSave}
+          />
+          <PaginationControls/>
+        </>
+      ) : (
+        <p>No employees found.</p>
+      )}
+    </div>
+  );
 };

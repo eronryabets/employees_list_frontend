@@ -1,16 +1,26 @@
 import styles from './SortingOptions.module.scss';
 import {ToggleButton, ToggleButtonGroup} from "react-bootstrap";
 import React from "react";
-
-interface SortingOptionsProps {
-    ageSort: ()=>void;
-    ratingSort: ()=>void;
-    ageFlag : boolean,
-    ratingFlag : boolean,
-}
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../store/store';
+import {toggleAgeFlag, toggleRatingFlag} from '../../slices/employeeSlice';
 
 
-export const SortingOptions = ({ageSort, ratingSort, ageFlag, ratingFlag}: SortingOptionsProps) => {
+export const SortingOptions = () => {
+    const dispatch = useDispatch();
+
+    const ageFlag = useSelector((state: RootState) =>
+        state.employees.ageFlag);
+    const ratingFlag = useSelector((state: RootState) =>
+        state.employees.ratingFlag);
+
+    const handleAgeSort = () => {
+        dispatch(toggleAgeFlag());
+    };
+
+    const handleRatingSort = () => {
+        dispatch(toggleRatingFlag());
+    };
 
     return (
         <div className={styles.sortingOptions}>
@@ -18,14 +28,14 @@ export const SortingOptions = ({ageSort, ratingSort, ageFlag, ratingFlag}: Sorti
                 <span className={`mx-3 ${styles.textContent}`}>Sort By :</span>
                 <ToggleButtonGroup type="checkbox" className="mb-2">
                     <ToggleButton id="tbg-check-1"
-                                  className={`${styles.button} ${ageFlag? styles.active : ''}`}
-                                  onClick={ageSort}
+                                  className={`${styles.button} ${ageFlag ? styles.active : ''}`}
+                                  onClick={handleAgeSort}
                                   value={'age'}>
                         Age
                     </ToggleButton>
                     <ToggleButton id="tbg-check-2"
-                                  className={`${styles.button} ${ratingFlag? styles.active : ''}`}
-                                  onClick={ratingSort}
+                                  className={`${styles.button} ${ratingFlag ? styles.active : ''}`}
+                                  onClick={handleRatingSort}
                                   value={'rating'}>
                         Rating
                     </ToggleButton>

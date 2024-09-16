@@ -7,10 +7,9 @@ import api from "../../api/api";
 interface EmployeeCardProps extends LocalEmployee {
 }
 
-export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
+export const EmployeeCardList = ({employees, onRatingSave}: {
     employees: EmployeeCardProps[],
     onRatingSave: () => void,
-    onEmployeeDelete: (id: number) => void,
 }) => {
     const handleSaveRating = async (id: number, newRating: number) => {
         try {
@@ -37,7 +36,7 @@ export const EmployeeCardList = ({employees, onRatingSave, onEmployeeDelete}: {
             }
 
             console.log(`Employee deleted`);
-            onEmployeeDelete(id);
+            // onEmployeeDelete(id);
         } catch (error) {
             console.error('Error delete employee:', error);
         }

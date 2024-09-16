@@ -1,45 +1,44 @@
 import { ReactComponent as SearchIcon } from 'assets/icon-search.svg';
 import styles from './Search.module.scss';
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "../Button";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { setSearchText, setHasError } from '../../slices/employeeSlice';
 
-interface SearchProps {
-  hasError: boolean;
-  onSubmit: (text: string) => void;
-}
+export const Search = () => {
+  const dispatch = useDispatch();
 
-type FormFields = {
-  username: HTMLInputElement;
-}
+  const searchText = useSelector((state: RootState) =>
+      state.employees.searchText);
 
-export const Search = ({ hasError, onSubmit }: SearchProps) => {
-  const [searchText, setSearchText]
-      = useState('');
+  const hasError = useSelector((state: RootState) =>
+      state.employees.hasError);
 
-   const handleSubmit = (event: React.FormEvent<HTMLFormElement & FormFields>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const text = event.currentTarget.username.value;
+    const text = event.currentTarget.search.value;
 
     if (text.trim()) {
-      onSubmit(text);
-      // event.currentTarget.reset();
-      // setSearchText('');
+      dispatch(setSearchText(text));
+    } else {
+      dispatch(setHasError(true)); // Устанавливаем ошибку, если строка пустая
     }
   };
 
-   return (
+  return (
     <form onSubmit={handleSubmit} autoComplete="off">
       <div className={styles.search}>
         <label htmlFor="search" className={styles.label}>
-          <SearchIcon />  {/* Иконка поиска */}
+          <SearchIcon /> {/* Иконка поиска */}
         </label>
         <input
           type="text"
           className={styles.textField}
           id="search"
-          name="username"
+          name="search"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => dispatch(setSearchText(e.target.value))}
           placeholder="Search Employees"
         />
         {hasError && (
