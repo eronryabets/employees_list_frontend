@@ -12,7 +12,6 @@ import { RootState, AppDispatch } from 'store/store';
 import {
   fetchEmployees,
   resetFilters,
-  setCurrentPage,
 } from '../../slices/paginationSlice';
 
 export const EmployeePage = () => {
@@ -37,13 +36,14 @@ export const EmployeePage = () => {
       ratingFlag }));
   }, [dispatch, currentPage, searchText, ageFlag, ratingFlag]);
 
-  useEffect(() => {
-    // Сбрасываем фильтры при переходе на главную страницу
-    if (location.pathname === '/') {
-      dispatch(resetFilters());
-      dispatch(setCurrentPage(1));
-    }
-  }, [location, dispatch]);
+  // useEffect(() => {
+  //   // Сбрасываем фильтры при переходе на главную страницу
+  //   if (location.pathname === '/') {
+  //     dispatch(resetFilters());
+  //     // dispatch(setCurrentPage(1));
+  //   }
+  // }, [location, dispatch]);
+
 
 
 

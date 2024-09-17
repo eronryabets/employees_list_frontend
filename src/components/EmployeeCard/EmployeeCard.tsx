@@ -10,8 +10,7 @@ import {
     deleteEmployee
 } from '../../slices/employeeSlice';
 import {LocalEmployee} from "../../types";
-import {fetchEmployees} from "../../slices/paginationSlice";
-import {useParams} from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
 
 interface EmployeeCardProps {
     employee: LocalEmployee;
@@ -20,10 +19,8 @@ interface EmployeeCardProps {
 export const EmployeeCard = ({employee}: EmployeeCardProps) => {
     const dispatch: AppDispatch = useDispatch();
 
-    // Локальное состояние для рейтинга
     const [localRating, setLocalRating] = useState(employee.rating);
-    const {page} = useParams<{ page?: string }>(); // Получаем текущую страницу из URL
-    const currentPage = page ? parseInt(page) : 1; // Значение страницы по умолчанию
+    const navigate = useNavigate();
 
     const handleIncrease = () => {
         setLocalRating(localRating + 1);
@@ -37,12 +34,12 @@ export const EmployeeCard = ({employee}: EmployeeCardProps) => {
         dispatch(updateEmployeeRating({id: employee.id, rating: localRating}));
     };
 
+
     const handleDelete = () => {
-        dispatch(deleteEmployee(employee.id)).then(() => {
-            // После успешного удаления обновляем список сотрудников
-            // window.location.reload(); // Простое обновление страницы
-            // или можно загрузить список сотрудников заново, если это происходит через API
-            dispatch(fetchEmployees({page: currentPage})); // действие для загрузки всех сотрудников
+        dispatch(deleteEmployee(employee.id)).then((action) => {
+            if (deleteEmployee.fulfilled.match(action)) {
+                navigate('/');
+            }
         });
     };
 
@@ -74,16 +71,16 @@ export const EmployeeCard = ({employee}: EmployeeCardProps) => {
                     </ListGroup.Item>
                     {/*</div>*/}
                 </ListGroup>
-                </div>
+            </div>
 
-                <Card.Body>
-                    {/* Отображение ссылки вместо card_links */}
-                    {employee.facebook_link && (
-                        <Card.Link href={employee.facebook_link}>
-                            Facebook
-                        </Card.Link>
-                    )}
-                </Card.Body>
+            <Card.Body>
+                {/* Отображение ссылки вместо card_links */}
+                {employee.facebook_link && (
+                    <Card.Link href={employee.facebook_link}>
+                        Facebook
+                    </Card.Link>
+                )}
+            </Card.Body>
         </Card>
-);
+    );
 };
