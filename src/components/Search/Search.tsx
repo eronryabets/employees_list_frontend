@@ -4,16 +4,16 @@ import React from "react";
 import { Button } from "../Button";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { setSearchText, setHasError } from '../../slices/employeeSlice';
+import { setSearchText, setHasError } from '../../slices/paginationSlice';
 
 export const Search = () => {
   const dispatch = useDispatch();
 
   const searchText = useSelector((state: RootState) =>
-      state.employees.searchText);
+      state.pagination.searchText);
 
   const hasError = useSelector((state: RootState) =>
-      state.employees.hasError);
+      state.pagination.hasError);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

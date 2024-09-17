@@ -3,16 +3,16 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { setCurrentPage } from '../../slices/employeeSlice';
+import { setCurrentPage } from '../../slices/paginationSlice';
 
 
 export const PaginationControls = () => {
     const dispatch = useDispatch();
 
     const currentPage = useSelector((state: RootState) =>
-        state.employees.currentPage);
+        state.pagination.currentPage);
     const nextPageUrl = useSelector((state: RootState) =>
-        state.employees.nextPageUrl);
+        state.pagination.nextPageUrl);
 
     const handleNextPage = () => {
         if (nextPageUrl) {

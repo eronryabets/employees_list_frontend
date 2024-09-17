@@ -1,104 +1,80 @@
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../api/api';
-import {extractLocalEmployees} from '../utils/extract-local-employees';
-import {LocalEmployee} from '../types';
+import { LocalEmployee } from '../types';
+import { RootState } from 'store/store'; // предположим, что у вас есть RootState
 
-// Thunk для получения списка сотрудников
-export const fetchEmployees = createAsyncThunk(
-    'employees/fetchEmployees',
-    async ({page = 1, search = '', age = false, rating = false}:
-               { page?: number, search?: string, age?: boolean, rating?: boolean },
-           {rejectWithValue}) => {
-        try {
-            const searchParam = search ? `&search=${search}` : '';
-            const ageParam = age ? `&sort_by=age` : '';
-            const ratingParam = rating ? `&sort_by=rating` : '';
-            const response =
-                await api.get(`?page=${page}${searchParam}${ageParam}${ratingParam}`);
-            return response.data;
-        } catch (error) {
-            return rejectWithValue('Failed to fetch employees');
-        }
+// Thunk для обновления рейтинга сотрудника
+export const updateEmployeeRating = createAsyncThunk(
+  'employees/updateRating',
+  async ({ id, rating }: { id: number, rating: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`${id}/`, { rating });
+      if (response.status !== 200) {
+        throw new Error('Failed to update rating');
+      }
+      return { id, rating };
+    } catch (error) {
+      return rejectWithValue('Failed to update rating');
     }
+  }
+);
+
+
+// Thunk для удаления сотрудника
+export const deleteEmployee = createAsyncThunk(
+  'employees/deleteEmployee',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`${id}/`);
+      if (response.status !== 204) {
+        throw new Error('Failed to delete employee');
+      }
+      return id;
+    } catch (error) {
+      return rejectWithValue('Failed to delete employee');
+    }
+  }
 );
 
 interface EmployeeState {
-    employees: LocalEmployee[];
-    currentPage: number;
-    totalCount: number;
-    nextPageUrl: string | null;
-    searchText: string;
-    ageFlag: boolean;
-    ratingFlag: boolean;
-    hasError: boolean;
-    loading: boolean;
+  employees: LocalEmployee[];
+  loading: boolean;
+  hasError: boolean;
 }
 
 const initialState: EmployeeState = {
-    employees: [],
-    currentPage: 1,
-    totalCount: 0,
-    nextPageUrl: null,
-    searchText: '',
-    ageFlag: false,
-    ratingFlag: false,
-    hasError: false,
-    loading: false,
+  employees: [],
+  loading: false,
+  hasError: false,
 };
 
+export const selectEmployeeById = (state: RootState, id: number) =>
+  state.employee.employees.find(employee => employee.id === id);
+
 const employeeSlice = createSlice({
-    name: 'employees',
-    initialState,
-    reducers: {
-        toggleAgeFlag: (state) => {
-            state.ageFlag = !state.ageFlag;
-        },
-        toggleRatingFlag: (state) => {
-            state.ratingFlag = !state.ratingFlag;
-        },
-        resetFilters: (state) => {
-            state.searchText = '';
-            state.ageFlag = false;
-            state.ratingFlag = false;
-        },
-        setCurrentPage: (state, action) => {
-            state.currentPage = action.payload;
-        },
-        setSearchText: (state, action: PayloadAction<string>) => {
-            state.searchText = action.payload;
-        },
-        setHasError(state, action: PayloadAction<boolean>) {
-            state.hasError = action.payload;
-        },
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchEmployees.pending, (state) => {
-                state.loading = true;
-                state.hasError = false;
-            })
-            .addCase(fetchEmployees.fulfilled, (state, action) => {
-                state.loading = false;
-                const localEmployees = extractLocalEmployees(action.payload.results);
-                state.employees = localEmployees;
-                state.totalCount = action.payload.count;
-                state.nextPageUrl = action.payload.next; // Здесь обновляем nextPageUrl
-                state.hasError = localEmployees.length === 0 && state.searchText !== '';
-            })
-            .addCase(fetchEmployees.rejected, (state) => {
-                state.loading = false;
-                state.hasError = true;
-            });
-    },
+  name: 'employee',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateEmployeeRating.fulfilled, (state, action:
+          PayloadAction<{ id: number, rating: number }>) => {
+        const index = state.employees.findIndex(emp => emp.id === action.payload.id);
+        if (index !== -1) {
+          state.employees[index].rating = action.payload.rating;
+        }
+      })
+      .addCase(deleteEmployee.fulfilled, (state, action: PayloadAction<number>) => {
+        state.employees = state.employees.filter(emp => emp.id !== action.payload);
+      })
+      .addCase(updateEmployeeRating.rejected, (state) => {
+        state.hasError = true;
+      })
+      .addCase(deleteEmployee.rejected, (state) => {
+        state.hasError = true;
+      });
+  },
 });
 
-export const {
-    toggleAgeFlag,
-    toggleRatingFlag,
-    resetFilters,
-    setCurrentPage,
-    setSearchText,
-    setHasError,
-} = employeeSlice.actions;
 
 export default employeeSlice.reducer;

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Search } from "../Search";
-import { EmployeeCardList } from '../EmployeeCard';
+import { EmployeeCardList } from '../EmployeesCardList';
 import { PaginationControls } from '../PaginationControls';
 import { Spinner } from '../Spinner';
 import { SortingOptions } from "../SortingOptions";
@@ -13,7 +13,7 @@ import {
   fetchEmployees,
   resetFilters,
   setCurrentPage,
-} from '../../slices/employeeSlice';
+} from '../../slices/paginationSlice';
 
 export const EmployeePage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -24,7 +24,7 @@ export const EmployeePage = () => {
     ageFlag,
     ratingFlag,
     loading,
-  } = useSelector((state: RootState) => state.employees);
+  } = useSelector((state: RootState) => state.pagination);
 
   const location = useLocation();
 
@@ -46,14 +46,6 @@ export const EmployeePage = () => {
   }, [location, dispatch]);
 
 
-  const handleRatingSave = () => {
-    dispatch(fetchEmployees({
-      page: currentPage,
-      search: searchText,
-      age: ageFlag,
-      rating: ratingFlag }));
-  };
-
 
   return (
     <div>
@@ -69,10 +61,7 @@ export const EmployeePage = () => {
             <PaginationControls/>
             <SortingOptions/>
           </div>
-          <EmployeeCardList
-            employees={employees}
-            onRatingSave={handleRatingSave}
-          />
+          <EmployeeCardList/>
           <PaginationControls/>
         </>
       ) : (

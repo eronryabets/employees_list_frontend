@@ -1,10 +1,12 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import employeeReducer from '../slices/employeeSlice';
+import paginationReducer from '../slices/paginationSlice';
 
 export const store = configureStore({
   reducer: {
-    employees: employeeReducer, // ваш reducer
+    employee: employeeReducer,
+    pagination: paginationReducer,
   },
 });
 

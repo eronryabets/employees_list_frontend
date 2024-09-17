@@ -3,16 +3,16 @@ import {ToggleButton, ToggleButtonGroup} from "react-bootstrap";
 import React from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store/store';
-import {toggleAgeFlag, toggleRatingFlag} from '../../slices/employeeSlice';
+import {toggleAgeFlag, toggleRatingFlag} from '../../slices/paginationSlice';
 
 
 export const SortingOptions = () => {
     const dispatch = useDispatch();
 
     const ageFlag = useSelector((state: RootState) =>
-        state.employees.ageFlag);
+        state.pagination.ageFlag);
     const ratingFlag = useSelector((state: RootState) =>
-        state.employees.ratingFlag);
+        state.pagination.ratingFlag);
 
     const handleAgeSort = () => {
         dispatch(toggleAgeFlag());

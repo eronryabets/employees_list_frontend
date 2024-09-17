@@ -29,6 +29,8 @@
   .cardContent {
     display: flex; /* Делает контейнер флексбоксом */
     align-items: center; /* Центрирует элементы по вертикали */
+    border: 1px solid rgba(124, 114, 115, 0.56); /* Добавляет обводку в один пиксель черного цвета */
+    border-radius: 5px;
   }
 
   .fixedImg {
