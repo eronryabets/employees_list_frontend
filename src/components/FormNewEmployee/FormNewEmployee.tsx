@@ -1,64 +1,64 @@
 import React, {useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from 'store/store'; // Используем типизированный dispatch
+import { RootState } from '../../store/store';
+import { setEmployeeField, clearFormError, resetForm, addNewEmployee} from '../../slices/formEmployeeSlice';
+import { v4 as uuidv4 } from 'uuid';
 import styles from './FormNewEmployee.module.scss';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import { Form, InputGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import {ModalSuccess} from "../Modals/ModalSuccess";
-import {FormAddEmployee} from "../../types";
 
-interface FormNewEmployeeProps {
-    onSubmit: (employeeData: any) => void;
-    formError: { [key: string]: string[] }; // Ошибки, переданные с сервера
-    successMessage: boolean; // Опциональное сообщение об успехе
-}
 
-export const FormNewEmployee = ({onSubmit, formError, successMessage}: FormNewEmployeeProps) => {
-    const [employeeData, setEmployeeData] = useState<FormAddEmployee>({
-        first_name: '',
-        last_name: '',
-        date_of_birth: '',
-        age: 0,
-        position: '',
-        profession: '',
-        years_worked: 0,
-        phone_number: '',
-        email: '',
-        facebook_link: '',
-        avatar: '',
-        rating: 0,
-    });
+export const FormNewEmployee = () => {
+    const dispatch = useAppDispatch();
+
+
+    const { employeeData, formError} = useSelector(
+        (state: RootState) => state.formEmployee
+    );
+
+    // Локальный стейт для модального окна
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setEmployeeData({
-            ...employeeData,
-            [name]: value,
-        });
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(employeeData);
-        // Передаем данные о сотруднике в родительский компонент
+        const { name, value } = e.target;
+        dispatch(setEmployeeField({ name, value }));
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]; // Получаем загруженный файл
+        const file = event.target.files?.[0];
         if (file) {
-            // Генерируем уникальное имя файла с UUID
             const uniqueFileName = `${uuidv4()}-${file.name}`;
-            // Создаем новый объект File с измененным именем
-            const newFile = new File([file], uniqueFileName, {type: file.type});
-            setEmployeeData({
-                ...employeeData,
-                avatar: newFile, // Устанавливаем файл с новым именем
-            });
+            const newFile = new File([file], uniqueFileName, { type: file.type });
+            dispatch(setEmployeeField({ name: 'avatar', value: newFile }));
         }
     };
 
 
-    return (
+      const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            // Выполняем действие и обрабатываем успешный результат
+            await dispatch(addNewEmployee(employeeData)).unwrap();
+
+            // После успешного добавления сбрасываем форму
+            dispatch(resetForm());
+            setShowSuccessModal(true); // Показать модальное окно с успехом
+
+            // Скрываем сообщение после определённого времени (например, через 3 секунды)
+            setTimeout(() => {
+                setShowSuccessModal(false); // Закрыть модальное окно
+                dispatch(clearFormError()); // Очистить ошибки формы
+            }, 3000); // 3 секунды
+        } catch (error) {
+            console.error('Failed to add employee:', error);
+        }
+    };
+
+
+
+return (
         <div className={styles.formNewEmployee}>
             <Form onSubmit={handleSubmit}>
                 <InputGroup className="mb-3">
@@ -277,10 +277,10 @@ export const FormNewEmployee = ({onSubmit, formError, successMessage}: FormNewEm
                     Add Employee
                 </Button>
 
-                {successMessage && (
+                {showSuccessModal  && (
                     <div className={styles.textSuccess}>
                         {/*{successMessage}*/}
-                        <ModalSuccess success={successMessage}/>
+                        <ModalSuccess success={showSuccessModal }/>
                     </div>
                 )}
 
