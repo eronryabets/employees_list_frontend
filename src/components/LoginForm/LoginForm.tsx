@@ -1,26 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './LoginForm.module.scss';
-import {RootState, useAppDispatch} from "../../store/store";
-import {useSelector} from "react-redux";
-import {fetchProfile, login} from "../../slices/authSlice";
-
+import { useAppDispatch, RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+import { fetchProfile, login } from "../../slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { loading, isAuthenticated, errorMessage } = useSelector((state: RootState) => state.auth);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const {loading, errorMessage, isAuthenticated} = useSelector((state: RootState) => state.auth);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        dispatch(login({username, password}));
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(login({ username, password })).then(() => {
+            // После логина загружаем профиль
+            dispatch(fetchProfile());
+        });
     };
 
-     useEffect(() => {
-         if (isAuthenticated) {
-            dispatch(fetchProfile());
+    // Редирект после успешного логина
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/'); // Редирект на главную страницу
         }
-    }, [isAuthenticated, dispatch]);
+    }, [isAuthenticated, navigate]);
 
     return (
         <div className={styles.loginForm}>

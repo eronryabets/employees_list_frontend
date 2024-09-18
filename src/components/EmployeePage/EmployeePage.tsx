@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Search } from "../Search";
 import { EmployeeCardList } from '../EmployeesCardList';
 import { PaginationControls } from '../PaginationControls';
@@ -11,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from 'store/store';
 import {
   fetchEmployees,
-  resetFilters,
 } from '../../slices/paginationSlice';
 
 export const EmployeePage = () => {
@@ -25,7 +23,7 @@ export const EmployeePage = () => {
     loading,
   } = useSelector((state: RootState) => state.pagination);
 
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
     // Загружаем сотрудников при изменении searchText или currentPage

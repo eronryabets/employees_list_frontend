@@ -35,8 +35,6 @@ export const login = createAsyncThunk(
             // Сохраняем токены в localStorage
             localStorage.setItem('accessToken', access);
             localStorage.setItem('refreshToken', refresh);
-            // перенаправляем на главную страницу
-            // window.location.href = '/';
             return { access, refresh };
         } catch (error: any) {
             return rejectWithValue('Login failed, please try again.');
@@ -47,7 +45,7 @@ export const login = createAsyncThunk(
 // Асинхронный thunk для получения данных профиля
 export const fetchProfile = createAsyncThunk(
     'auth/fetchProfile',
-    async (_, { getState, rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await api.get(`${ACCOUNT_URL}profile/`);
             const { username, email, role } = response.data;
@@ -58,11 +56,24 @@ export const fetchProfile = createAsyncThunk(
     }
 );
 
+// Асинхронный thunk для логаута
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async (_, { rejectWithValue }) => {
+        try {
+            await api.post(`${ACCOUNT_URL}logout/`);
+            return;
+        } catch (error: any) {
+            return rejectWithValue('Logout failed.');
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logout: (state) => {
+        clearAuth: (state) => {
             state.accessToken = null;
             state.refreshToken = null;
             state.isAuthenticated = false;
@@ -90,7 +101,7 @@ const authSlice = createSlice({
             state.errorMessage = action.payload as string;
         });
 
-        // Обработка профиля
+        // Обработка получения профиля
         builder.addCase(fetchProfile.pending, (state) => {
             state.loading = true;
         });
@@ -104,9 +115,29 @@ const authSlice = createSlice({
             state.loading = false;
             state.errorMessage = action.payload as string;
         });
+
+        // Обработка логаута
+        builder.addCase(logout.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(logout.fulfilled, (state) => {
+            state.loading = false;
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.isAuthenticated = false;
+            state.username = null;
+            state.email = null;
+            state.role = null;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+        });
+        builder.addCase(logout.rejected, (state, action) => {
+            state.loading = false;
+            state.errorMessage = action.payload as string;
+        });
     },
 });
 
-export const { logout } = authSlice.actions;
+export const { clearAuth } = authSlice.actions;
 
 export default authSlice.reducer;

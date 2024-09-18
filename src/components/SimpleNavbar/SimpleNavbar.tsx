@@ -2,19 +2,26 @@ import styles from './SimpleNavbar.module.scss';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import classNames from 'classnames';
-import {ThemeSwitcher} from "../ThemeSwitcher";
-import {Link, useLocation} from 'react-router-dom';
-import {useSelector} from "react-redux";
-import {RootState} from "../../store/store";
+import { ThemeSwitcher } from "../ThemeSwitcher";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch, RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+import { logout } from "../../slices/authSlice";
 
 
 export const SimpleNavbar = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
-    const location = useLocation(); // Получаем текущий путь
+    const { username, isAuthenticated, role } = useSelector((state: RootState) => state.auth);
 
-    const {username, email, role} = useSelector((state: RootState) => state.auth);
+    const handleLogout = () => {
+        dispatch(logout()).then(() => {
+            navigate('/login'); // Перенаправляем на страницу входа после логаута
+        });
+    };
 
     return (
         <div className={styles.simpleNavbar}>
@@ -27,29 +34,47 @@ export const SimpleNavbar = () => {
                             <Nav.Link
                                 as={Link}
                                 to="/"
-                                className={classNames({ [styles.active]: location.pathname === '/' })}
+                                className={classNames({[styles.active]: location.pathname === '/'})}
                             >
                                 Emp. List
                             </Nav.Link>
+
                             <Nav.Link
                                 as={Link}
                                 to="/add"
-                                className={classNames({ [styles.active]: location.pathname === '/add' })}
+                                className={classNames({[styles.active]: location.pathname === '/add'})}
                             >
                                 Add
                             </Nav.Link>
-                            <Nav.Link href="#link">Link</Nav.Link>
-                            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                            </NavDropdown>
+
+                            <nav className={styles.simpleNavbar}>
+                                {isAuthenticated ? (
+                                    <div className={styles.userInfo}>
+                                        <button
+                                            className={styles.logoutButton}
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
+                                        <span>{username}</span>
+                                        <span>{`(${role})`}</span>
+                                    </div>
+                                ) : (
+                                    <Nav.Link
+                                        as={Link}
+                                        to="/login/"
+                                        className={classNames({
+                                            [styles.active]:
+                                            location.pathname === '/login/'})}
+                                    >
+                                        Login
+                                    </Nav.Link>
+                                )}
+                            </nav>
                         </Nav>
                     </Navbar.Collapse>
-                    <span> [ {username} {email} {role} ]</span>
-                    <ThemeSwitcher />
+
+                    <ThemeSwitcher/>
                 </Container>
             </Navbar>
         </div>
