@@ -18,10 +18,15 @@ export const SimpleNavbar = () => {
     const { username, isAuthenticated, role } = useSelector((state: RootState) => state.auth);
 
     const handleLogout = () => {
-        dispatch(logout()).then(() => {
-            navigate('/login'); // Перенаправляем на страницу входа после логаута
-        });
-    };
+    dispatch(logout())
+      .unwrap()  // Для обработки результата асинхронного экшена
+      .then(() => {
+          navigate('/login'); // Перенаправляем на страницу входа
+      })
+      .catch((error) => {
+          console.error('Logout failed:', error); // Логируем ошибку
+      });
+};
 
     return (
         <div className={styles.simpleNavbar}>

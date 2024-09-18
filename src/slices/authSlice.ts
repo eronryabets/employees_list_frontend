@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ACCOUNT_URL } from '../config';
 import api from "../api/api";
+import {RootState} from "../store/store";
 
 interface AuthState {
     accessToken: string | null;
@@ -59,10 +60,23 @@ export const fetchProfile = createAsyncThunk(
 // Асинхронный thunk для логаута
 export const logout = createAsyncThunk(
     'auth/logout',
-    async (_, { rejectWithValue }) => {
+    async (_, { dispatch, getState, rejectWithValue }) => {
         try {
-            await api.post(`${ACCOUNT_URL}logout/`);
-            return;
+            // Извлекаем refresh_token из localStorage или из state
+            const refreshToken = localStorage
+                .getItem('refreshToken') || (getState() as RootState).auth.refreshToken;
+
+            if (!refreshToken) {
+                throw new Error("No refresh token found");
+            }
+
+            // Отправляем POST запрос с refresh_token
+            await api.post(`${ACCOUNT_URL}logout/`, {
+                refresh_token: refreshToken
+            });
+
+            // После успешного запроса очищаем Redux стор и localStorage
+            dispatch(clearAuth());
         } catch (error: any) {
             return rejectWithValue('Logout failed.');
         }
