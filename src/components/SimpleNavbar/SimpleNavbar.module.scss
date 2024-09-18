@@ -24,4 +24,16 @@
     align-items: center;
     gap: 10px; /* Расстояние между элементами */
   }
+
+  .logoutButton {
+    margin-top: 4px;
+    border-radius: 10px;
+    background-color: rgba(85, 89, 91, 0.08);
+    transition: transform 0.2s ease-in-out; /* Добавляем плавный переход */
+  }
+
+  .logoutButton:hover {
+    transform: scale(1.1); /* Увеличиваем размер на 10% */
+  }
+
 }
