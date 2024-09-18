@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ACCOUNT_URL } from '../config';
+import api from "../api/api";
 
 interface AuthState {
     accessToken: string | null;
@@ -35,7 +36,7 @@ export const login = createAsyncThunk(
             localStorage.setItem('accessToken', access);
             localStorage.setItem('refreshToken', refresh);
             // перенаправляем на главную страницу
-            window.location.href = '/';
+            // window.location.href = '/';
             return { access, refresh };
         } catch (error: any) {
             return rejectWithValue('Login failed, please try again.');
@@ -47,15 +48,8 @@ export const login = createAsyncThunk(
 export const fetchProfile = createAsyncThunk(
     'auth/fetchProfile',
     async (_, { getState, rejectWithValue }) => {
-        const state = getState() as { auth: AuthState };
-        const accessToken = state.auth.accessToken;
-
         try {
-            const response = await axios.get(`${ACCOUNT_URL}profile/`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
+            const response = await api.get(`${ACCOUNT_URL}profile/`);
             const { username, email, role } = response.data;
             return { username, email, role };
         } catch (error: any) {

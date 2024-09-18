@@ -6,11 +6,15 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import classNames from 'classnames';
 import {ThemeSwitcher} from "../ThemeSwitcher";
 import {Link, useLocation} from 'react-router-dom';
+import {useSelector} from "react-redux";
+import {RootState} from "../../store/store";
 
 
 export const SimpleNavbar = () => {
 
     const location = useLocation(); // Получаем текущий путь
+
+    const {username, email, role} = useSelector((state: RootState) => state.auth);
 
     return (
         <div className={styles.simpleNavbar}>
@@ -44,6 +48,7 @@ export const SimpleNavbar = () => {
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
+                    <span> [ {username} {email} {role} ]</span>
                     <ThemeSwitcher />
                 </Container>
             </Navbar>
