@@ -2,14 +2,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import employeeReducer from '../slices/employeeSlice';
 import paginationReducer from '../slices/paginationSlice';
-import formEmployee from '../slices/formEmployeeSlice';
+import formEmployeeReducer from '../slices/formEmployeeSlice';
+import authReducer from '../slices/authSlice';
+
 import {useDispatch} from "react-redux";
 
 export const store = configureStore({
   reducer: {
     employee: employeeReducer,
     pagination: paginationReducer,
-    formEmployee: formEmployee,
+    formEmployee: formEmployeeReducer,
+    auth: authReducer,
   },
 });
 

@@ -1,43 +1,26 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import styles from './LoginForm.module.scss';
-import { ACCOUNT_URL } from "../../config";
-
+import {RootState, useAppDispatch} from "../../store/store";
+import {useSelector} from "react-redux";
+import {fetchProfile, login} from "../../slices/authSlice";
 
 
 export const LoginForm = () => {
+    const dispatch = useAppDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const {loading, errorMessage, isAuthenticated} = useSelector((state: RootState) => state.auth);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        const userData = {
-            username,
-            password
-        };
-
-        try {
-            const response =
-                await axios.post(`${ACCOUNT_URL}login/`, userData);
-
-            const { access, refresh } = response.data;
-
-            // Сохраняем токены в localStorage
-            localStorage.setItem('accessToken', access);
-            localStorage.setItem('refreshToken', refresh);
-
-            console.log('Login successful:', response.data);
-
-            // Перенаправление на защищенную страницу
-            window.location.href = '/';
-
-        } catch (error) {
-            setErrorMessage('Login failed, please try again.');
-            console.error('Login error:', error);
-        }
+        dispatch(login({username, password}));
     };
+
+     useEffect(() => {
+         if (isAuthenticated) {
+            dispatch(fetchProfile());
+        }
+    }, [isAuthenticated, dispatch]);
 
     return (
         <div className={styles.loginForm}>
@@ -50,8 +33,7 @@ export const LoginForm = () => {
                         placeholder="Username"
                         required
                         value={username}
-                        onChange={(e) =>
-                            setUsername(e.target.value)}
+                        onChange={(e) => setUsername(e.target.value)}
                         className={styles.input}
                     />
                     <input
@@ -60,16 +42,15 @@ export const LoginForm = () => {
                         placeholder="Password"
                         required
                         value={password}
-                        onChange={(e) =>
-                            setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                         className={styles.input}
                     />
-                    <button type="submit" className={`
-                    ${styles.btn}
-                    ${styles.btnPrimary}
-                    ${styles.btnLarge}
-                    ${styles.btnBlock}`}>
-                        Let me in
+                    <button
+                        type="submit"
+                        className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
+                        disabled={loading}
+                    >
+                        {loading ? 'Logging in...' : 'Let me in'}
                     </button>
                 </form>
                 {errorMessage && <p className={styles.error}>{errorMessage}</p>}
