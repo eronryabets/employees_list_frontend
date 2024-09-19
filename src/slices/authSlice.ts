@@ -2,11 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ACCOUNT_URL } from '../config';
 import api from "../api/api";
-import {RootState} from "../store/store";
 
 interface AuthState {
-    accessToken: string | null;
-    refreshToken: string | null;
     isAuthenticated: boolean;
     loading: boolean;
     username: string | null;
@@ -16,8 +13,6 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    accessToken: null,
-    refreshToken: null,
     isAuthenticated: false,
     loading: false,
     username: null,
@@ -31,12 +26,11 @@ export const login = createAsyncThunk(
     'auth/login',
     async (userData: { username: string; password: string }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${ACCOUNT_URL}login/`, userData);
-            const { access, refresh } = response.data;
-            // Сохраняем токены в localStorage
-            localStorage.setItem('accessToken', access);
-            localStorage.setItem('refreshToken', refresh);
-            return { access, refresh };
+            // Отправляем запрос на логин
+            await axios.post(`${ACCOUNT_URL}login/`, userData, {
+                withCredentials: true, // Включаем cookie в запросе
+            });
+            return true; // Возвращаем признак успешного логина
         } catch (error: any) {
             return rejectWithValue('Login failed, please try again.');
         }
@@ -48,7 +42,8 @@ export const fetchProfile = createAsyncThunk(
     'auth/fetchProfile',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${ACCOUNT_URL}profile/`);
+            const response = await api.get(`${ACCOUNT_URL}profile/`, {
+            });
             const { username, email, role } = response.data;
             return { username, email, role };
         } catch (error: any) {
@@ -60,22 +55,13 @@ export const fetchProfile = createAsyncThunk(
 // Асинхронный thunk для логаута
 export const logout = createAsyncThunk(
     'auth/logout',
-    async (_, { dispatch, getState, rejectWithValue }) => {
+    async (_, { dispatch, rejectWithValue }) => {
         try {
-            // Извлекаем refresh_token из localStorage или из state
-            const refreshToken = localStorage
-                .getItem('refreshToken') || (getState() as RootState).auth.refreshToken;
-
-            if (!refreshToken) {
-                throw new Error("No refresh token found");
-            }
-
-            // Отправляем POST запрос с refresh_token
-            await api.post(`${ACCOUNT_URL}logout/`, {
-                refresh_token: refreshToken
+            // Отправляем запрос на логаут (cookies автоматически отправятся)
+            await api.post(`${ACCOUNT_URL}logout/`, {}, {
             });
 
-            // После успешного запроса очищаем Redux стор и localStorage
+            // После успешного логаута очищаем Redux store
             dispatch(clearAuth());
         } catch (error: any) {
             return rejectWithValue('Logout failed.');
@@ -88,34 +74,26 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         clearAuth: (state) => {
-            state.accessToken = null;
-            state.refreshToken = null;
             state.isAuthenticated = false;
             state.username = null;
             state.email = null;
             state.role = null;
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
         },
     },
     extraReducers: (builder) => {
-        // Обработка логина
         builder.addCase(login.pending, (state) => {
             state.loading = true;
             state.errorMessage = '';
         });
-        builder.addCase(login.fulfilled, (state, action) => {
+        builder.addCase(login.fulfilled, (state) => {
             state.loading = false;
-            state.isAuthenticated = true;
-            state.accessToken = action.payload.access;
-            state.refreshToken = action.payload.refresh;
+            state.isAuthenticated = true; // Аутентификация прошла успешно
         });
         builder.addCase(login.rejected, (state, action) => {
             state.loading = false;
             state.errorMessage = action.payload as string;
         });
 
-        // Обработка получения профиля
         builder.addCase(fetchProfile.pending, (state) => {
             state.loading = true;
         });
@@ -124,26 +102,25 @@ const authSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.role = action.payload.role;
+            // Пользователь аутентифицирован, если профиль успешно получен
+            state.isAuthenticated = true;
         });
         builder.addCase(fetchProfile.rejected, (state, action) => {
             state.loading = false;
             state.errorMessage = action.payload as string;
+            // Если не удалось получить профиль, сбрасываем авторизацию
+            state.isAuthenticated = false;
         });
 
-        // Обработка логаута
         builder.addCase(logout.pending, (state) => {
             state.loading = true;
         });
         builder.addCase(logout.fulfilled, (state) => {
             state.loading = false;
-            state.accessToken = null;
-            state.refreshToken = null;
             state.isAuthenticated = false;
             state.username = null;
             state.email = null;
             state.role = null;
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
         });
         builder.addCase(logout.rejected, (state, action) => {
             state.loading = false;

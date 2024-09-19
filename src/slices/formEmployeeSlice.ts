@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import api from '../api/api';
+import {BASE_URL_EMP} from "../config";
 
 
 
@@ -54,7 +55,7 @@ export const addNewEmployee = createAsyncThunk(
                 formData.append(key, employeeData[key]);
             }
 
-            const response = await api.post('/', formData, {
+            const response = await api.post(`${BASE_URL_EMP}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

@@ -1,14 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../api/api';
 import { LocalEmployee } from '../types';
-import { RootState } from 'store/store'; // предположим, что у вас есть RootState
+import { RootState } from 'store/store';
+import {BASE_URL_EMP} from "../config"; // предположим, что у вас есть RootState
 
 // Thunk для обновления рейтинга сотрудника
 export const updateEmployeeRating = createAsyncThunk(
   'employees/updateRating',
   async ({ id, rating }: { id: number, rating: number }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`${id}/`, { rating });
+      const response = await api.patch(`${BASE_URL_EMP}${id}/`, { rating });
       if (response.status !== 200) {
         throw new Error('Failed to update rating');
       }
@@ -25,7 +26,7 @@ export const deleteEmployee = createAsyncThunk(
   'employees/deleteEmployee',
   async (id: number, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`${id}/`);
+      const response = await api.delete(`${BASE_URL_EMP}${id}/`);
       if (response.status !== 204) {
         throw new Error('Failed to delete employee');
       }

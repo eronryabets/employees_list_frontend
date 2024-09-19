@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import api from '../api/api';
 import {extractLocalEmployees} from '../utils/extract-local-employees';
 import {LocalEmployee} from '../types';
+import {BASE_URL_EMP} from "../config";
 
 // Thunk для получения списка сотрудников
 export const fetchEmployees = createAsyncThunk(
@@ -14,7 +15,7 @@ export const fetchEmployees = createAsyncThunk(
             const ageParam = age ? `&sort_by=age` : '';
             const ratingParam = rating ? `&sort_by=rating` : '';
             const response =
-                await api.get(`?page=${page}${searchParam}${ageParam}${ratingParam}`);
+                await api.get(`${BASE_URL_EMP}?page=${page}${searchParam}${ageParam}${ratingParam}`);
             return response.data;
         } catch (error) {
             return rejectWithValue('Failed to fetch employees');
