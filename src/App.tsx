@@ -7,6 +7,7 @@ import {AddNewEmployeePage} from "./components/AddNewEmployeePage";
 import {HelmetProvider} from 'react-helmet-async';
 import {NotFoundPage} from "./components/NotFoundPage";
 import {LoginForm} from "./components/LoginForm";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 
 function App() {
@@ -14,11 +15,16 @@ function App() {
         <HelmetProvider>
             <Router>
                 <Routes>
-                    <Route path="/login" element={<LoginForm />} />
-                    <Route element={<MainLayout />}>
-                        <Route path="/" element={<EmployeePage />} />
-                        <Route path="/add" element={<AddNewEmployeePage />} />
-                        <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/login" element={<LoginForm/>}/>
+                    {/* Защищенные маршруты */}
+                    <Route element={<ProtectedRoute/>}>
+
+                        <Route element={<MainLayout/>}>
+                            <Route path="/" element={<EmployeePage/>}/>
+                            <Route path="/add" element={<AddNewEmployeePage/>}/>
+                            <Route path="*" element={<NotFoundPage/>}/>
+                        </Route>
+
                     </Route>
                 </Routes>
             </Router>
@@ -28,8 +34,8 @@ function App() {
 
 const MainLayout = () => (
     <Container>
-        <SimpleNavbar />
-        <Outlet />
+        <SimpleNavbar/>
+        <Outlet/>
     </Container>
 );
 
