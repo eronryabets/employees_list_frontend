@@ -3,6 +3,7 @@ import api from '../api/api';
 import {extractLocalEmployees} from '../utils/extract-local-employees';
 import {LocalEmployee} from '../types';
 import {BASE_URL_EMP} from "../config";
+import {deleteEmployee} from "./employeeSlice";
 
 // Thunk для получения списка сотрудников
 export const fetchEmployees = createAsyncThunk(
@@ -91,7 +92,11 @@ const paginationSlice = createSlice({
             .addCase(fetchEmployees.rejected, (state) => {
                 state.loading = false;
                 state.hasError = true;
-            });
+            })
+            // Добавляем обработку удаления сотрудника
+            .addCase(deleteEmployee.fulfilled, (state, action) => {
+            state.employees = state.employees.filter(emp => emp.id !== action.payload);
+        });
     },
 });
 
