@@ -3,8 +3,8 @@ import {Card, ListGroup, Button} from 'react-bootstrap';
 import styles from './EmployeeCard.module.scss';
 import {ModalDeleteButton} from "../Modals/ModalDeleteButton";
 
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from 'store/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from 'store/store';
 import {
     updateEmployeeRating,
     deleteEmployee
@@ -20,6 +20,7 @@ export const EmployeeCard = ({employee}: EmployeeCardProps) => {
     const dispatch: AppDispatch = useDispatch();
 
     const [localRating, setLocalRating] = useState(employee.rating);
+    const {role} = useSelector((state: RootState) => state.auth);
     const navigate = useNavigate();
 
     const handleIncrease = () => {
@@ -52,6 +53,11 @@ export const EmployeeCard = ({employee}: EmployeeCardProps) => {
                     <Card.Text>'Good employee'</Card.Text>
                 </Card.Body>
                 <ModalDeleteButton onDelete={handleDelete}/>
+                {role === 'admin' && (
+                    <Button variant="success" href={`/employee/${employee.id}`} className={styles.editButton}>
+                        Edit
+                    </Button>
+                )}
             </div>
 
             <div className={styles.cardContent}>

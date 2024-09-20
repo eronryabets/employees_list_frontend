@@ -8,6 +8,7 @@ import {HelmetProvider} from 'react-helmet-async';
 import {NotFoundPage} from "./components/NotFoundPage";
 import {LoginForm} from "./components/LoginForm";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import {EditEmployeePage} from "./components/EditEmployeePage";
 
 
 function App() {
@@ -22,10 +23,11 @@ function App() {
                         <Route element={<MainLayout/>}>
                             <Route path="/" element={<EmployeePage/>}/>
                             <Route path="/add" element={<AddNewEmployeePage/>}/>
-                            <Route path="*" element={<NotFoundPage/>}/>
+                            <Route path="/employee/:id" element={<EditEmployeePage />} />
                         </Route>
 
                     </Route>
+                    <Route path="*" element={<NotFoundPage/>}/>
                 </Routes>
             </Router>
         </HelmetProvider>
